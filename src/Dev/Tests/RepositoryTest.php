@@ -147,17 +147,17 @@ namespace Apparat\Dev\Tests {
         /**
          * Test the generation of a test repository
          */
-//        public function testGenerateRepository()
-//        {
-//            $objectConfig = [
-//                Object::ARTICLE => [
-//                    Repository::COUNT => 10,
-//                    Repository::HIDDEN => .5,
-//                    Repository::DRAFTS => .2,
-//                ],
-//            ];
-//            $this->generateAndTestRepository($objectConfig, 10, false);
-//        }
+        public function testGenerateRepository()
+        {
+            $objectConfig = [
+                Object::ARTICLE => [
+                    Repository::COUNT => 10,
+                    Repository::HIDDEN => .5,
+                    Repository::DRAFTS => .2,
+                ],
+            ];
+            $this->generateAndTestRepository($objectConfig, 10, false);
+        }
 
         /**
          * Generate and test a repository

@@ -100,7 +100,8 @@ class ShallowObjectFactory extends AbstractObjectFactory
      * @param array $config Object configuration
      * @param string $containerPath Repository relative container path
      */
-    protected function createObjectRevisions($objectId, array $config, $containerPath) {
+    protected function createObjectRevisions($objectId, array $config, $containerPath)
+    {
         // Run through all object paths and create (empty) files
         /** @var FileAdapterStrategy $adapterStrategy */
         $adapterStrategy = $this->repository->getAdapterStrategy();

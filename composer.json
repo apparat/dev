@@ -15,8 +15,6 @@
   "require-dev": {
     "phpunit/phpunit": "^5.3",
     "apparat/object": "dev-master",
-    "apparat/resource": "dev-master",
-    "apparat/kernel": "dev-master",
     "dominicsayers/isemail": "dev-master",
     "satooshi/php-coveralls": "^1.0",
     "codeclimate/php-test-reporter": "dev-master"

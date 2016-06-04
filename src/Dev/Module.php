@@ -40,6 +40,7 @@ use Apparat\Dev\Application\Contract\ObjectFactoryInterface;
 use Apparat\Dev\Application\Service\RepositoryGeneratorService;
 use Apparat\Dev\Infrastructure\Factory\ObjectFactory;
 use Apparat\Dev\Infrastructure\Factory\ShallowObjectFactory;
+use Apparat\Dev\Infrastructure\Mutator\AbstractObjectMutator;
 use Apparat\Kernel\Ports\AbstractModule;
 use Apparat\Kernel\Ports\Contract\DependencyInjectionContainerInterface;
 use Dotenv\Dotenv;
@@ -95,6 +96,12 @@ class Module extends AbstractModule
                 ]
             ],
             'instanceOf' => RepositoryGeneratorService::class
+        ]);
+        $diContainer->register(AbstractObjectMutator::class, [
+            'shared' => true
+        ]);
+        $diContainer->register(AbstractObjectMutator::class, [
+            'shared' => true
         ]);
     }
 }

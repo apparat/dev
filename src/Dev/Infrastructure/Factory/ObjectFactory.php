@@ -36,7 +36,12 @@
 
 namespace Apparat\Dev\Infrastructure\Factory;
 
-use Apparat\Object\Domain\Model\Path\RepositoryPathInterface;
+use Apparat\Dev\Infrastructure\Mutator\ArticleObjectMutator;
+use Apparat\Dev\Infrastructure\Mutator\ObjectMutatorInterface;
+use Apparat\Dev\Ports\Repository;
+use Apparat\Kernel\Ports\Kernel;
+use Apparat\Object\Domain\Model\Object\ObjectInterface;
+use Apparat\Object\Ports\Object;
 
 /**
  * Object factory
@@ -44,31 +49,72 @@ use Apparat\Object\Domain\Model\Path\RepositoryPathInterface;
  * @package Apparat\Dev
  * @subpackage Apparat\Dev\Infrastructure
  */
-class ObjectFactory extends ShallowObjectFactory
+class ObjectFactory extends AbstractObjectFactory
 {
+    /**
+     * Create a repository object
+     *
+     * @param \DateTimeInterface $creationDate Creation date
+     * @param int $objectId Object ID
+     * @param array $config Object configuration
+     */
+    public function create(\DateTimeInterface $creationDate, $objectId, array $config)
+    {
+        $objectTypeMethod = ucfirst($config[Repository::TYPE]);
+        $objectMutator = null;
+
+        /** @var ObjectInterface $object */
+        $object = $this->{'create'.$objectTypeMethod}($creationDate, $objectMutator);
+
+        // Create the object revisions
+        $this->createObjectRevisions($object, $config, $objectMutator);
+
+        // Eventually hide the object if necessary
+        if (($config[Repository::HIDDEN] > 0) ? (rand(0, 100) < ($config[Repository::HIDDEN] * 100)) : false) {
+            $object->delete()->persist();
+        }
+    }
 
     /**
      * Create the object revisions
      *
-     * @param int $objectId Object ID
+     * @param ObjectInterface $object Object
      * @param array $config Object configuration
-     * @param string $containerPath Repository relative container path
+     * @param ObjectMutatorInterface $objectMutator Object mutator
      */
-    protected function createObjectRevisions($objectId, array $config, $containerPath)
+    protected function createObjectRevisions(
+        ObjectInterface $object,
+        array $config,
+        ObjectMutatorInterface $objectMutator
+    ) {
+        // Determine the amount of archive revisions to create
+        $revisions = ($config[Repository::REVISIONS] < 0) ?
+            rand(1, abs($config[Repository::REVISIONS]) + 1) : (1 + $config[Repository::REVISIONS]);
+
+        // Determine the draft status
+        $draft = (($config[Repository::DRAFTS] > 0) ? (rand(0, 100) < $config[Repository::DRAFTS] * 100) : 0);
+
+        // Build the revision path list
+        for ($revision = 1; $revision < $revisions - $draft; ++$revision) {
+            $objectMutator->mutate($object)->publish()->persist();
+        }
+        if ($revision <= $revisions - $draft) {
+            $objectMutator->mutate($object)->publish()->persist();
+        }
+        if ($draft) {
+            $objectMutator->mutate($object)->persist();
+        }
+    }
+
+    /**
+     * Create an article object
+     *
+     * @param \DateTimeInterface $creationDate Creation date
+     * @return ObjectInterface Article
+     */
+    protected function createArticle(\DateTimeInterface $creationDate, ObjectMutatorInterface &$objectMutator = null)
     {
-
-        /** @var RepositoryPathInterface $revRepositoryPath */
-//        $revRepositoryPath = Kernel::create(RepositoryPath::class, [$this->repository, $revisionPath]);
-//        $absRevisionPath = $adapterStrategy->getAbsoluteResourcePath($revRepositoryPath);
-
-//        \Apparat\Object\Application\Factory\ObjectFactory::createFromParams($revRepositoryPath);
-
-//        echo $objectId.': '.$containerPath.PHP_EOL;
-//        // Run through all object paths and create (empty) files
-//        /** @var FileAdapterStrategy $adapterStrategy */
-//        $adapterStrategy = $this->repository->getAdapterStrategy();
-//        foreach ($this->revisionPaths($objectId, $config, $containerPath) as $revisionPathIndex => $revisionPath) {
-//            $this->createObjectResource($revisionPathIndex, $revisionPath, $adapterStrategy);
-//        }
+        $objectMutator = Kernel::create(ArticleObjectMutator::class);
+        return $this->repository->createObject(Object::ARTICLE, '', [], $creationDate);
     }
 }
