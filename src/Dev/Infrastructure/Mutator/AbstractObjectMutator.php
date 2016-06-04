@@ -36,6 +36,10 @@
 
 namespace Apparat\Dev\Infrastructure\Mutator;
 
+use Apparat\Dev\Ports\RuntimeException;
+use Apparat\Object\Domain\Model\Object\ObjectInterface;
+use Faker\Generator;
+
 /**
  * Abstract object mutator
  *
@@ -45,9 +49,51 @@ namespace Apparat\Dev\Infrastructure\Mutator;
 abstract class AbstractObjectMutator implements ObjectMutatorInterface
 {
     /**
-     * Random markdown texts
+     * Fake data generator
      *
-     * @var array
+     * @var Generator
      */
-    protected $markdown;
+    protected $generator;
+
+    /**
+     * Abstract object mutator constructor
+     *
+     * @param Generator $generator
+     */
+    public function __construct(Generator $generator)
+    {
+        $this->generator = $generator;
+    }
+
+    /**
+     * Magic setter for randomization of setter calls
+     *
+     * @param string $method Method name
+     * @param array $arguments Arguments
+     * @return ObjectInterface Object
+     * @throws RuntimeException If the randomized setter is invalid
+     */
+    public function __call($method, array $arguments)
+    {
+        // If the randomized setter is invalid
+        $setterMethod = 'set'.substr($method, 9);
+        if (strncmp('setRandom', $method, 9) || !is_callable([$this, $setterMethod])) {
+            throw new RuntimeException(
+                sprintf('Invalid randomized setter "%s"', $setterMethod),
+                RuntimeException::INVALID_RANDOMIZED_SETTER
+            );
+        }
+
+        // If no object is given
+        if (!count($arguments) || !($arguments[0] instanceof ObjectInterface)) {
+            throw new RuntimeException('Invalid mutator subject', RuntimeException::INVALID_MUTATOR_SUBJECT);
+        }
+
+        // If the setter call should be randomized
+        if ((count($arguments) > 1) && (rand(0, 100) > max(0, min(1, floatval($arguments[1]))) * 100)) {
+            return $arguments[0];
+        }
+
+        return $this->$setterMethod($arguments[0]);
+    }
 }

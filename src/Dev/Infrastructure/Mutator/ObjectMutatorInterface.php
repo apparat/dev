@@ -47,6 +47,14 @@ use Apparat\Object\Domain\Model\Object\ObjectInterface;
 interface ObjectMutatorInterface
 {
     /**
+     * Initialize the object
+     *
+     * @param ObjectInterface $object Object
+     * @return ObjectInterface Object
+     */
+    public function initialize(ObjectInterface $object);
+
+    /**
      * Mutate the object
      *
      * @param ObjectInterface $object Object

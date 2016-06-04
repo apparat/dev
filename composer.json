@@ -16,6 +16,7 @@
     "phpunit/phpunit": "^5.3",
     "apparat/object": "dev-master",
     "dominicsayers/isemail": "dev-master",
+    "fzaninotto/faker": "dev-master",
     "satooshi/php-coveralls": "^1.0",
     "codeclimate/php-test-reporter": "dev-master"
   },

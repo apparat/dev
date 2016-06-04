@@ -44,18 +44,124 @@ use Apparat\Object\Domain\Model\Object\ObjectInterface;
  *
  * @package Apparat\Dev
  * @subpackage Apparat\Dev\Infrastructure
+ * @method ObjectInterface setRandomDescription(ObjectInterface $object, $probability)
+ * @method ObjectInterface setRandomAbstract(ObjectInterface $object, $probability)
+ * @method ObjectInterface setRandomCategories(ObjectInterface $object, $probability)
+ * @method ObjectInterface setRandomKeywords(ObjectInterface $object, $probability)
  */
 class ArticleObjectMutator extends AbstractObjectMutator
 {
     /**
-     * Mutate the object
+     * Initialize the article
      *
-     * @param ObjectInterface $object Object
-     * @return ObjectInterface Object
+     * @param ObjectInterface $object Article
+     * @return ObjectInterface Article
+     */
+    public function initialize(ObjectInterface $object)
+    {
+        $this->setTitle($object); // p-name
+        $this->setRandomDescription($object, .7); // p-summary
+        $this->setRandomAbstract($object, .2);
+        $this->setRandomCategories($object, .4); // p-category
+        $this->setRandomKeywords($object, .7);
+        $this->setAuthors($object); // TODO p-author
+
+        // URL = u-url
+        // URL = u-uid
+        // system.published = dt-published
+        // system.modified = dt-updated
+
+        // p-location
+        // u-syndication
+        // u-in-reply-to
+        // p-rsvp
+        // p-comment
+        // u-like-of
+        // u-like
+        // u-repost-of
+        // u-repost (+ h-cite)
+        // u-photo
+        // u-audio
+        // u-video
+        // u-featured
+
+        return $object;
+    }
+
+    /**
+     * Mutate the article
+     *
+     * @param ObjectInterface $object Article
+     * @return ObjectInterface Article
      */
     public function mutate(ObjectInterface $object)
     {
-        $object->setPayload(Random::markdown());
+        $object->setPayload(Random::markdown()); // e-content
+        return $object;
+    }
+
+    /**
+     * Set the article title
+     *
+     * @param ObjectInterface $object Article
+     * @return ObjectInterface $object Article
+     */
+    protected function setTitle(ObjectInterface $object)
+    {
+        return $object->setTitle($this->generator->text(70));
+    }
+    /**
+     * Set the article description
+     *
+     * @param ObjectInterface $object Article
+     * @return ObjectInterface $object Article
+     */
+    protected function setDescription(ObjectInterface $object)
+    {
+        return $object->setDescription($this->generator->text(200));
+    }
+
+    /**
+     * Set the article abstract
+     *
+     * @param ObjectInterface $object Article
+     * @return ObjectInterface $object Article
+     */
+    protected function setAbstract(ObjectInterface $object)
+    {
+        return $object->setAbstract($this->generator->realText(250));
+    }
+
+    /**
+     * Set the article keywords
+     *
+     * @param ObjectInterface $object Article
+     * @return ObjectInterface $object Article
+     */
+    protected function setKeywords(ObjectInterface $object)
+    {
+        return $object->setKeywords($this->generator->words(rand(0, 5)));
+    }
+
+    /**
+     * Set the article categories
+     *
+     * @param ObjectInterface $object Article
+     * @return ObjectInterface $object Article
+     */
+    protected function setCategories(ObjectInterface $object)
+    {
+        return $object->setCategories($this->generator->words(rand(0, 5)));
+    }
+
+    /**
+     * Set the article authors
+     *
+     * @param ObjectInterface $object Article
+     * @return ObjectInterface $object Article
+     */
+    protected function setAuthors(ObjectInterface $object)
+    {
         return $object;
     }
 }

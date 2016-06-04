@@ -56,4 +56,16 @@ class RuntimeException extends \RuntimeException
      * @var int
      */
     const CANNOT_CREATE_SHALLOW_RESOURCE = 1464997761;
+    /**
+     * Invalid randomized setter
+     *
+     * @var int
+     */
+    const INVALID_RANDOMIZED_SETTER = 1465078211;
+    /**
+     * Invalid mutator subject
+     *
+     * @var int
+     */
+    const INVALID_MUTATOR_SUBJECT = 1465078374;
 }

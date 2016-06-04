@@ -44,6 +44,8 @@ use Apparat\Dev\Infrastructure\Mutator\AbstractObjectMutator;
 use Apparat\Kernel\Ports\AbstractModule;
 use Apparat\Kernel\Ports\Contract\DependencyInjectionContainerInterface;
 use Dotenv\Dotenv;
+use Faker\Factory;
+use Faker\Generator;
 
 /**
  * Object module
@@ -101,7 +103,14 @@ class Module extends AbstractModule
             'shared' => true
         ]);
         $diContainer->register(AbstractObjectMutator::class, [
-            'shared' => true
+            'shared' => true,
+            'substitutions' => [
+                Generator::class => [
+                    'instance' => function() {
+                        return Factory::create();
+                    },
+                ]
+            ],
         ]);
     }
 }

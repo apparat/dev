@@ -114,7 +114,8 @@ class ObjectFactory extends AbstractObjectFactory
      */
     protected function createArticle(\DateTimeInterface $creationDate, ObjectMutatorInterface &$objectMutator = null)
     {
+        /** @var ObjectMutatorInterface $objectMutator */
         $objectMutator = Kernel::create(ArticleObjectMutator::class);
-        return $this->repository->createObject(Object::ARTICLE, '', [], $creationDate);
+        return $objectMutator->initialize($this->repository->createObject(Object::ARTICLE, '', [], $creationDate));
     }
 }
