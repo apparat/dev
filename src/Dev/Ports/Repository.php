@@ -141,7 +141,7 @@ class Repository
         // Strip all invalid object types
         $config = array_intersect_key($config, Object::getSupportedTypes());
 
-        // If the configuration is empty 
+        // If the configuration is empty
         if (!count($config)) {
             throw new InvalidArgumentsException(
                 'Empty object configuration',

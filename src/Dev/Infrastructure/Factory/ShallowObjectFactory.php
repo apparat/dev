@@ -82,8 +82,13 @@ class ShallowObjectFactory extends AbstractObjectFactory
     {
         // Build the container path
         $hidden = $config[Repository::HIDDEN] ? (rand(1, 5) == 5) : false;
-        $containerPath = '/'.$this->containerFactory->create($creationDate, $hidden, $objectId,
-                $config[Repository::TYPE]).'/';
+        $containerPath = '/'.
+            $this->containerFactory->create(
+                $creationDate,
+                $hidden,
+                $objectId,
+                $config[Repository::TYPE]
+            ).'/';
 
         // Run through all object paths and create (empty) files
         /** @var FileAdapterStrategy $adapterStrategy */

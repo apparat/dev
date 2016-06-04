@@ -90,8 +90,23 @@ namespace Apparat\Dev\Tests {
             $objectConfig = [
                 Object::ARTICLE => []
             ];
-            Repository::generate($this->createTemporaryFileName(), $objectConfig,
-                Repository::FLAG_CREATE_ROOT_DIRECTORY);
+            Repository::generate(
+                $this->createTemporaryFileName(),
+                $objectConfig,
+                Repository::FLAG_CREATE_ROOT_DIRECTORY
+            );
+        }
+
+        /**
+         * Test the repository generation with failing mkdir()
+         *
+         * @expectedException \Apparat\Dev\Ports\RuntimeException
+         * @expectedExceptionCode 1464997310
+         */
+        public function testRepositoryBuildFailingMkdir()
+        {
+            putenv('MOCK_MKDIR=1');
+            $this->testRepositoryBuild();
         }
 
         /**
@@ -119,18 +134,6 @@ namespace Apparat\Dev\Tests {
                 $objectConfig,
                 Repository::FLAG_CREATE_ROOT_DIRECTORY | Repository::FLAG_EMPTY_FILES
             );
-        }
-
-        /**
-         * Test the repository generation with failing mkdir()
-         *
-         * @expectedException \Apparat\Dev\Ports\RuntimeException
-         * @expectedExceptionCode 1464997310
-         */
-        public function testRepositoryBuildFailingMkdir()
-        {
-            putenv('MOCK_MKDIR=1');
-            $this->testRepositoryBuild();
         }
 
         /**
