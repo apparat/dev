@@ -17,7 +17,8 @@
     "apparat/object": "@dev",
     "apparat/resource": "@dev",
     "apparat/kernel": "@dev",
-    "dominicsayers/isemail": "@dev"
+    "dominicsayers/isemail": "@dev",
+    "satooshi/php-coveralls": "^1.0"
   },
   "repositories": [
     {
