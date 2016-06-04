@@ -63,7 +63,7 @@ namespace Apparat\Dev\Tests {
          * @expectedException \Apparat\Dev\Ports\InvalidArgumentsException
          * @expectedExceptionCode 1464974472
          */
-        public function testRepositoryBuildInvalidRoot()
+        public function testGenerateRepositoryInvalidRoot()
         {
             Repository::generate(null, []);
         }
@@ -74,7 +74,7 @@ namespace Apparat\Dev\Tests {
          * @expectedException \Apparat\Dev\Ports\InvalidArgumentsException
          * @expectedExceptionCode 1464974779
          */
-        public function testRepositoryBuildInvalidObjectConfig()
+        public function testGenerateRepositoryInvalidObjectConfig()
         {
             Repository::generate($this->createTemporaryFileName(), [], Repository::FLAG_CREATE_ROOT_DIRECTORY);
         }
@@ -85,7 +85,7 @@ namespace Apparat\Dev\Tests {
          * @expectedException \Apparat\Dev\Ports\InvalidArgumentsException
          * @expectedExceptionCode 1464975382
          */
-        public function testRepositoryBuildEmptyObjectCount()
+        public function testGenerateRepositoryEmptyObjectCount()
         {
             $objectConfig = [
                 Object::ARTICLE => []
@@ -98,21 +98,9 @@ namespace Apparat\Dev\Tests {
         }
 
         /**
-         * Test the repository generation with failing mkdir()
-         *
-         * @expectedException \Apparat\Dev\Ports\RuntimeException
-         * @expectedExceptionCode 1464997310
-         */
-        public function testRepositoryBuildFailingMkdir()
-        {
-            putenv('MOCK_MKDIR=1');
-            $this->testRepositoryBuild();
-        }
-
-        /**
          * Test the generation of a test repository
          */
-        public function testRepositoryBuild()
+        public function testGenerateRepositoryEmptyFiles()
         {
             $objectConfig = [
                 Object::ARTICLE => [
@@ -129,11 +117,29 @@ namespace Apparat\Dev\Tests {
                     Repository::DRAFTS => true,
                 ]
             ];
+            $tmpDirectory = sys_get_temp_dir().DIRECTORY_SEPARATOR.'apparat_test';
             Repository::generate(
-                sys_get_temp_dir().DIRECTORY_SEPARATOR.'apparat-test',
+                $this->registerTemporaryDirectory($tmpDirectory),
                 $objectConfig,
                 Repository::FLAG_CREATE_ROOT_DIRECTORY | Repository::FLAG_EMPTY_FILES
             );
+            $datePath = str_repeat(DIRECTORY_SEPARATOR.'*', getenv('OBJECT_DATE_PRECISION'));
+            $this->assertEquals(
+                200,
+                count(glob($tmpDirectory.$datePath.DIRECTORY_SEPARATOR.'{.,}[!.,!..]*', GLOB_ONLYDIR | GLOB_BRACE))
+            );
+        }
+
+        /**
+         * Test the repository generation with failing mkdir()
+         *
+         * @expectedException \Apparat\Dev\Ports\RuntimeException
+         * @expectedExceptionCode 1464997310
+         */
+        public function testGenerateRepositoryFailingMkdir()
+        {
+            putenv('MOCK_MKDIR=1');
+            $this->testGenerateRepositoryEmptyFiles();
         }
 
         /**
@@ -142,10 +148,10 @@ namespace Apparat\Dev\Tests {
          * @expectedException \Apparat\Dev\Ports\RuntimeException
          * @expectedExceptionCode 1464997761
          */
-        public function testRepositoryBuildFailingTouch()
+        public function testGenerateRepositoryFailingTouch()
         {
             putenv('MOCK_TOUCH=1');
-            $this->testRepositoryBuild();
+            $this->testGenerateRepositoryEmptyFiles();
         }
     }
 }

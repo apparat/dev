@@ -45,11 +45,17 @@ namespace Apparat\Dev\Tests;
 abstract class AbstractTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * Temporary FILES
+     * Temporary files
      *
      * @var array
      */
-    protected $tmpFiles = array();
+    protected $tmpFiles = [];
+    /**
+     * Temporary directories
+     *
+     * @var array
+     */
+    protected $tmpDirectories = [];
 
     /**
      * Tests if two arrays equal in their keys and values
@@ -143,14 +149,13 @@ abstract class AbstractTest extends \PHPUnit_Framework_TestCase
      */
     protected function tearDown()
     {
+        foreach ($this->tmpDirectories as $tmpDirectory) {
+            $this->scanTemporaryDirectory($tmpDirectory);
+        }
         foreach (array_reverse($this->tmpFiles) as $tmpFile) {
             @is_file($tmpFile) ? @unlink($tmpFile) : @rmdir($tmpFile);
         }
     }
-
-    /*******************************************************************************
-     * PRIVATE METHODS
-     *******************************************************************************/
 
     /**
      * Prepare and register a temporary file name
@@ -172,6 +177,35 @@ abstract class AbstractTest extends \PHPUnit_Framework_TestCase
     protected function createTemporaryFile()
     {
         return $this->tmpFiles[] = tempnam(sys_get_temp_dir(), 'apparat_test_');
+    }
+
+    /**
+     * Register a temporary directory that needs to be deleted recursively on shutdown
+     *
+     * @param string $directory Directory
+     * @return string Directory
+     */
+    protected function registerTemporaryDirectory($directory)
+    {
+        return $this->tmpDirectories[] = $this->tmpFiles[] = $directory;
+    }
+
+    /**
+     * Scan a temporary directory and register all files and subdirectories (recursively)
+     *
+     * @param string $directory Directory
+     */
+    protected function scanTemporaryDirectory($directory)
+    {
+        foreach (scandir($directory) as $fileOrDirectory) {
+            if ($fileOrDirectory !== '.' && $fileOrDirectory !== '..' && !is_link($fileOrDirectory)) {
+                $fileOrDirectory = $directory.DIRECTORY_SEPARATOR.$fileOrDirectory;
+                $this->tmpFiles[] = $fileOrDirectory;
+                if (is_dir($fileOrDirectory)) {
+                    $this->scanTemporaryDirectory($fileOrDirectory);
+                }
+            }
+        }
     }
 
     /**
