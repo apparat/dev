@@ -56,7 +56,6 @@ class ObjectFactory implements ObjectFactoryInterface
      */
     public function create(\DateTime $creationDate, $objectId, array $config)
     {
-
     }
 
     /**

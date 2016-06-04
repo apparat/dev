@@ -49,11 +49,11 @@ class ContainerFactory
      *
      * @param \DateTime $creationDate Object creation date and time
      * @param boolean $hidden Hidden object
-     * @param int $id Object ID
+     * @param int $uid Object ID
      * @param string $type Object type
      * @return string Container path
      */
-    public function create(\DateTime $creationDate, $hidden, $id, $type)
+    public function create(\DateTime $creationDate, $hidden, $uid, $type)
     {
         $components = array_slice(
             [
@@ -67,7 +67,7 @@ class ContainerFactory
             0,
             intval(getenv('OBJECT_DATE_PRECISION'))
         );
-        $components[] = ($hidden ? '.' : '').$id.'-'.$type;
+        $components[] = ($hidden ? '.' : '').$uid.'-'.$type;
         return implode('/', $components);
     }
 }
