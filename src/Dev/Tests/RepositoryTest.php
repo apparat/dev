@@ -34,79 +34,144 @@
  *  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  ***********************************************************************************/
 
-namespace Apparat\Dev\Tests;
+namespace Apparat\Dev\Tests {
 
-use Apparat\Dev\Ports\Repository;
-use Apparat\Object\Ports\Object;
+    use Apparat\Dev\Ports\Repository;
+    use Apparat\Object\Ports\Object;
 
-/**
- * Repository test
- *
- * @package Apparat\Dev
- * @subpackage Apparat\Dev\Tests
- */
-class RepositoryTest extends AbstractTest
-{
     /**
-     * Test the generation of a test repository
+     * Repository test
      *
-     * @expectedException \Apparat\Dev\Ports\InvalidArgumentsException
-     * @expectedExceptionCode 1464974472
+     * @package Apparat\Dev
+     * @subpackage Apparat\Dev\Tests
      */
-    public function testRepositoryBuildInvalidRoot()
+    class RepositoryTest extends AbstractTest
     {
-        Repository::generate(null, []);
+        /**
+         * Tears down the fixture
+         */
+        public function tearDown()
+        {
+            putenv('MOCK_MKDIR');
+            putenv('MOCK_TOUCH');
+            parent::tearDown();
+        }
+
+        /**
+         * Test the generation of a test repository
+         *
+         * @expectedException \Apparat\Dev\Ports\InvalidArgumentsException
+         * @expectedExceptionCode 1464974472
+         */
+        public function testRepositoryBuildInvalidRoot()
+        {
+            Repository::generate(null, []);
+        }
+
+        /**
+         * Test the generation of a test repository with an empty object configuration
+         *
+         * @expectedException \Apparat\Dev\Ports\InvalidArgumentsException
+         * @expectedExceptionCode 1464974779
+         */
+        public function testRepositoryBuildInvalidObjectConfig()
+        {
+            Repository::generate($this->createTemporaryFileName(), [], Repository::FLAG_CREATE_ROOT_DIRECTORY);
+        }
+
+        /**
+         * Test the generation of a test repository with zero object count
+         *
+         * @expectedException \Apparat\Dev\Ports\InvalidArgumentsException
+         * @expectedExceptionCode 1464975382
+         */
+        public function testRepositoryBuildEmptyObjectCount()
+        {
+            $objectConfig = [
+                Object::ARTICLE => []
+            ];
+            Repository::generate($this->createTemporaryFileName(), $objectConfig,
+                Repository::FLAG_CREATE_ROOT_DIRECTORY);
+        }
+
+        /**
+         * Test the generation of a test repository
+         */
+        public function testRepositoryBuild()
+        {
+            $objectConfig = [
+                Object::ARTICLE => [
+                    Repository::COUNT => 100,
+                    Repository::HIDDEN => true,
+                    Repository::DRAFTS => true,
+                ],
+                Object::EVENT => [
+                    Repository::COUNT => 100,
+                ],
+                Object::CONTACT => [
+                    Repository::COUNT => 100,
+                    Repository::REVISIONS => -3,
+                    Repository::DRAFTS => true,
+                ]
+            ];
+            Repository::generate(
+                sys_get_temp_dir().DIRECTORY_SEPARATOR.'apparat-test',
+                $objectConfig,
+                Repository::FLAG_CREATE_ROOT_DIRECTORY | Repository::FLAG_EMPTY_FILES
+            );
+        }
+
+        /**
+         * Test the repository generation with failing mkdir()
+         *
+         * @expectedException \Apparat\Dev\Ports\RuntimeException
+         * @expectedExceptionCode 1464997310
+         */
+        public function testRepositoryBuildFailingMkdir()
+        {
+            putenv('MOCK_MKDIR=1');
+            $this->testRepositoryBuild();
+        }
+
+        /**
+         * Test the repository generation with failing touch()
+         *
+         * @expectedException \Apparat\Dev\Ports\RuntimeException
+         * @expectedExceptionCode 1464997761
+         */
+        public function testRepositoryBuildFailingTouch()
+        {
+            putenv('MOCK_TOUCH=1');
+            $this->testRepositoryBuild();
+        }
+    }
+}
+
+namespace Apparat\Dev\Infrastructure\Factory {
+
+    /**
+     * Create a directory
+     *
+     * @param string $pathname Path name
+     * @param int $mode File mode
+     * @param bool $recursive Create parent directories
+     * @return bool Success
+     */
+    function mkdir($pathname, $mode = 0777, $recursive = false)
+    {
+        return (getenv('MOCK_MKDIR') != 1) ? \mkdir($pathname, $mode, $recursive) : false;
     }
 
     /**
-     * Test the generation of a test repository with an empty object configuration
+     * Sets access and modification time of file
      *
-     * @expectedException \Apparat\Dev\Ports\InvalidArgumentsException
-     * @expectedExceptionCode 1464974779
+     * @param string $filename File name
+     * @param null $time Modification time
+     * @param null $atime Access time
+     * @return bool Success
      */
-    public function testRepositoryBuildInvalidObjectConfig()
+    function touch($filename, $time = null, $atime = null)
     {
-        Repository::generate($this->createTemporaryFileName(), [], Repository::FLAG_CREATE_ROOT_DIRECTORY);
-    }
-
-    /**
-     * Test the generation of a test repository with zero object count
-     *
-     * @expectedException \Apparat\Dev\Ports\InvalidArgumentsException
-     * @expectedExceptionCode 1464975382
-     */
-    public function testRepositoryBuildEmptyObjectCount()
-    {
-        $objectConfig = [
-            Object::ARTICLE => []
-        ];
-        Repository::generate($this->createTemporaryFileName(), $objectConfig, Repository::FLAG_CREATE_ROOT_DIRECTORY);
-    }
-
-    /**
-     * Test the generation of a test repository
-     */
-    public function testRepositoryBuild()
-    {
-        $objectConfig = [
-            Object::ARTICLE => [
-                Repository::COUNT => 100,
-                Repository::HIDDEN => true,
-                Repository::DRAFTS => true,
-            ],
-            Object::EVENT => [
-                Repository::COUNT => 100,
-            ],
-            Object::CONTACT => [
-                Repository::COUNT => 100,
-                Repository::REVISIONS => -3,
-                Repository::DRAFTS => true,
-            ]
-        ];
-        Repository::generate(
-            sys_get_temp_dir().DIRECTORY_SEPARATOR.'apparat-test',
-            $objectConfig,
-            Repository::FLAG_CREATE_ROOT_DIRECTORY | Repository::FLAG_EMPTY_FILES
-        );
+        return (getenv('MOCK_TOUCH') != 1) ? \touch($filename, $time, $atime) : false;
     }
 }

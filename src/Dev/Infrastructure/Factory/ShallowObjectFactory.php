@@ -80,18 +80,82 @@ class ShallowObjectFactory extends AbstractObjectFactory
      */
     public function create(\DateTimeInterface $creationDate, $objectId, array $config)
     {
-        /** @var FileAdapterStrategy $adapterStrategy */
-        $adapterStrategy = $this->repository->getAdapterStrategy();
-
         // Build the container path
         $hidden = $config[Repository::HIDDEN] ? (rand(1, 5) == 5) : false;
         $containerPath = '/'.$this->containerFactory->create($creationDate, $hidden, $objectId,
                 $config[Repository::TYPE]).'/';
 
+        // Run through all object paths and create (empty) files
+        /** @var FileAdapterStrategy $adapterStrategy */
+        $adapterStrategy = $this->repository->getAdapterStrategy();
+        foreach ($this->revisionPaths($objectId, $config, $containerPath) as $revisionPathIndex => $revisionPath) {
+            $this->createObjectResource($revisionPathIndex, $revisionPath, $adapterStrategy);
+        }
+    }
+
+    /**
+     * Create a single object resource
+     *
+     * @param int $revisionPathIndex Revision path index
+     * @param string $revisionPath Revision repository path
+     * @param FileAdapterStrategy $adapterStrategy
+     * @throws RuntimeException If the shallow resource cannot be created
+     */
+    protected function createObjectResource($revisionPathIndex, $revisionPath, FileAdapterStrategy $adapterStrategy)
+    {
+        /** @var RepositoryPathInterface $revRepositoryPath */
+        $revRepositoryPath = Kernel::create(RepositoryPath::class, [$this->repository, $revisionPath]);
+        $absRevisionPath = $adapterStrategy->getAbsoluteResourcePath($revRepositoryPath);
+
+        // For the first revision: Create the container directory
+        if (!$revisionPathIndex) {
+            $this->createObjectResourceContainer(dirname($absRevisionPath));
+        }
+
+        // If the shallow resource cannot be created
+        if (!touch($absRevisionPath)) {
+            throw new RuntimeException(
+                sprintf('Cannot create shallow resource "%s"', $absRevisionPath),
+                RuntimeException::CANNOT_CREATE_SHALLOW_RESOURCE
+            );
+        }
+    }
+
+    /**
+     * Create the object resource container
+     *
+     * @param string $absContainerPath Absolute object resource container path
+     * @throws RuntimeException If the resource container cannot be created
+     */
+    protected function createObjectResourceContainer($absContainerPath)
+    {
+        // If the resource container cannot be created
+        if (!is_dir($absContainerPath) && !mkdir($absContainerPath, 0777, true)) {
+            throw new RuntimeException(
+                sprintf('Cannot create container directory "%s"', $absContainerPath),
+                RuntimeException::CANNOT_CREATE_CONTAINER_DIRECTORY
+            );
+        }
+    }
+
+    /**
+     * Generate the list of repository relative revision paths
+     *
+     * @param int $objectId Object ID
+     * @param array $config Object configuration
+     * @param string $containerPath Repository relative container path
+     * @return array Repository relative revision paths
+     */
+    protected function revisionPaths($objectId, array $config, $containerPath)
+    {
         // Determine the amount of archive revisions to create
         $revisions = ($config[Repository::REVISIONS] < 0) ?
             rand(1, abs($config[Repository::REVISIONS]) + 1) : (1 + $config[Repository::REVISIONS]);
+
+        // Determine the draft status
         $draft = intval($config[Repository::DRAFTS] ? (rand(1, 5) == 5) : 0);
+
+        // Build the revision path list
         $revisionPaths = [];
         for ($revision = 1; $revision < $revisions - $draft; ++$revision) {
             $revisionPaths[] = $containerPath.$objectId.'-'.$revision.'.'.getenv('OBJECT_RESOURCE_EXTENSION');
@@ -104,33 +168,6 @@ class ShallowObjectFactory extends AbstractObjectFactory
                 '.'.getenv('OBJECT_RESOURCE_EXTENSION');
         }
 
-        // Run through all object paths and create (empty) files
-        foreach ($revisionPaths as $revisionPathIndex => $revisionPath) {
-            /** @var RepositoryPathInterface $revRepositoryPath */
-            $revRepositoryPath = Kernel::create(RepositoryPath::class, [$this->repository, $revisionPath]);
-            $absRevisionPath = $adapterStrategy->getAbsoluteResourcePath($revRepositoryPath);
-
-            // For the first revision
-            if (!$revisionPathIndex) {
-                // Create the container directory
-                $absContainerPath = dirname($absRevisionPath);
-
-                // If the resource container cannot be created
-                if (!is_dir($absContainerPath) && !mkdir($absContainerPath, 0777, true)) {
-                    throw new RuntimeException(
-                        sprintf('Cannot create container directory "%s"', $absContainerPath),
-                        RuntimeException::CANNOT_CREATE_CONTAINER_DIRECTORY
-                    );
-                }
-            }
-
-            // If the shallow resource cannot be created
-            if (!touch($absRevisionPath)) {
-                throw new RuntimeException(
-                    sprintf('Cannot create shallow resource "%s"', $absRevisionPath),
-                    RuntimeException::CANNOT_CREATE_SHALLOW_RESOURCE
-                );
-            }
-        }
+        return $revisionPaths;
     }
 }
