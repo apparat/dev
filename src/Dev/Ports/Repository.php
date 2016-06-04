@@ -56,8 +56,8 @@ class Repository
      */
     protected static $defaultObjectConfig = [
         self::COUNT => 0,
-        self::DRAFTS => false,
-        self::HIDDEN => false,
+        self::DRAFTS => 0,
+        self::HIDDEN => 0,
         self::REVISIONS => 0,
     ];
     /**
@@ -178,8 +178,8 @@ class Repository
         }
 
         // Sanitize values
-        $config[self::DRAFTS] = boolval($config[self::DRAFTS]);
-        $config[self::HIDDEN] = boolval($config[self::HIDDEN]);
+        $config[self::DRAFTS] = max(0, min(1, floatval($config[self::DRAFTS])));
+        $config[self::HIDDEN] = max(0, min(1, floatval($config[self::HIDDEN])));
         $config[self::REVISIONS] = intval($config[self::REVISIONS]);
         $config[self::TYPE] = $type;
 

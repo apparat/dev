@@ -36,8 +36,7 @@
 
 namespace Apparat\Dev\Infrastructure\Factory;
 
-use Apparat\Dev\Application\Contract\ObjectFactoryInterface;
-use Apparat\Object\Domain\Repository\RepositoryInterface;
+use Apparat\Object\Domain\Model\Path\RepositoryPathInterface;
 
 /**
  * Object factory
@@ -45,25 +44,31 @@ use Apparat\Object\Domain\Repository\RepositoryInterface;
  * @package Apparat\Dev
  * @subpackage Apparat\Dev\Infrastructure
  */
-class ObjectFactory implements ObjectFactoryInterface
+class ObjectFactory extends ShallowObjectFactory
 {
-    /**
-     * Create a repository object
-     *
-     * @param \DateTimeInterface $creationDate Creation date
-     * @param int $objectId Object ID
-     * @param array $config Object configuration
-     */
-    public function create(\DateTimeInterface $creationDate, $objectId, array $config)
-    {
-    }
 
     /**
-     * Set the repository
+     * Create the object revisions
      *
-     * @param RepositoryInterface $repository Repository
+     * @param int $objectId Object ID
+     * @param array $config Object configuration
+     * @param string $containerPath Repository relative container path
      */
-    public function setRepository(RepositoryInterface $repository)
+    protected function createObjectRevisions($objectId, array $config, $containerPath)
     {
+
+        /** @var RepositoryPathInterface $revRepositoryPath */
+//        $revRepositoryPath = Kernel::create(RepositoryPath::class, [$this->repository, $revisionPath]);
+//        $absRevisionPath = $adapterStrategy->getAbsoluteResourcePath($revRepositoryPath);
+
+//        \Apparat\Object\Application\Factory\ObjectFactory::createFromParams($revRepositoryPath);
+
+//        echo $objectId.': '.$containerPath.PHP_EOL;
+//        // Run through all object paths and create (empty) files
+//        /** @var FileAdapterStrategy $adapterStrategy */
+//        $adapterStrategy = $this->repository->getAdapterStrategy();
+//        foreach ($this->revisionPaths($objectId, $config, $containerPath) as $revisionPathIndex => $revisionPath) {
+//            $this->createObjectResource($revisionPathIndex, $revisionPath, $adapterStrategy);
+//        }
     }
 }

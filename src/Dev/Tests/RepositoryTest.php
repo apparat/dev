@@ -105,8 +105,8 @@ namespace Apparat\Dev\Tests {
             $objectConfig = [
                 Object::ARTICLE => [
                     Repository::COUNT => 100,
-                    Repository::HIDDEN => true,
-                    Repository::DRAFTS => true,
+                    Repository::HIDDEN => .2,
+                    Repository::DRAFTS => .2,
                 ],
                 Object::EVENT => [
                     Repository::COUNT => 100,
@@ -114,20 +114,10 @@ namespace Apparat\Dev\Tests {
                 Object::CONTACT => [
                     Repository::COUNT => 100,
                     Repository::REVISIONS => -3,
-                    Repository::DRAFTS => true,
+                    Repository::DRAFTS => .2,
                 ]
             ];
-            $tmpDirectory = sys_get_temp_dir().DIRECTORY_SEPARATOR.'apparat_test';
-            Repository::generate(
-                $this->registerTemporaryDirectory($tmpDirectory),
-                $objectConfig,
-                Repository::FLAG_CREATE_ROOT_DIRECTORY | Repository::FLAG_EMPTY_FILES
-            );
-            $datePath = str_repeat(DIRECTORY_SEPARATOR.'*', getenv('OBJECT_DATE_PRECISION'));
-            $this->assertEquals(
-                200,
-                count(glob($tmpDirectory.$datePath.DIRECTORY_SEPARATOR.'{.,}[!.,!..]*', GLOB_ONLYDIR | GLOB_BRACE))
-            );
+            $this->generateAndTestRepository($objectConfig, 200, true);
         }
 
         /**
@@ -152,6 +142,41 @@ namespace Apparat\Dev\Tests {
         {
             putenv('MOCK_TOUCH=1');
             $this->testGenerateRepositoryEmptyFiles();
+        }
+
+        /**
+         * Test the generation of a test repository
+         */
+//        public function testGenerateRepository()
+//        {
+//            $objectConfig = [
+//                Object::ARTICLE => [
+//                    Repository::COUNT => 10,
+//                    Repository::HIDDEN => .5,
+//                    Repository::DRAFTS => .2,
+//                ],
+//            ];
+//            $this->generateAndTestRepository($objectConfig, 10, false);
+//        }
+
+        /**
+         * Generate and test a repository
+         *
+         * @param array $objectConfig Object configuration
+         * @param int $expectedCount Expected number of objects
+         * @param bool $emptyFiles Create empty files
+         */
+        protected function generateAndTestRepository(array $objectConfig, $expectedCount, $emptyFiles = false)
+        {
+            $tmpDirectory = sys_get_temp_dir().DIRECTORY_SEPARATOR.'apparat_test';
+            Repository::generate(
+                $this->registerTemporaryDirectory($tmpDirectory),
+                $objectConfig,
+                Repository::FLAG_CREATE_ROOT_DIRECTORY | ($emptyFiles ? Repository::FLAG_EMPTY_FILES : 0)
+            );
+            $datePath = str_repeat(DIRECTORY_SEPARATOR.'*', getenv('OBJECT_DATE_PRECISION'));
+            $glob = $tmpDirectory.$datePath.DIRECTORY_SEPARATOR.'{.,}[!.,!..]*';
+            $this->assertEquals($expectedCount, count(glob($glob, GLOB_ONLYDIR | GLOB_BRACE)));
         }
     }
 }

@@ -81,7 +81,7 @@ class ShallowObjectFactory extends AbstractObjectFactory
     public function create(\DateTimeInterface $creationDate, $objectId, array $config)
     {
         // Build the container path
-        $hidden = $config[Repository::HIDDEN] ? (rand(1, 5) == 5) : false;
+        $hidden = ($config[Repository::HIDDEN] > 0) ? (rand(0, 100) < ($config[Repository::HIDDEN] * 100)) : false;
         $containerPath = '/'.
             $this->containerFactory->create(
                 $creationDate,
@@ -90,6 +90,17 @@ class ShallowObjectFactory extends AbstractObjectFactory
                 $config[Repository::TYPE]
             ).'/';
 
+        $this->createObjectRevisions($objectId, $config, $containerPath);
+    }
+
+    /**
+     * Create the object revisions
+     *
+     * @param int $objectId Object ID
+     * @param array $config Object configuration
+     * @param string $containerPath Repository relative container path
+     */
+    protected function createObjectRevisions($objectId, array $config, $containerPath) {
         // Run through all object paths and create (empty) files
         /** @var FileAdapterStrategy $adapterStrategy */
         $adapterStrategy = $this->repository->getAdapterStrategy();
@@ -158,7 +169,7 @@ class ShallowObjectFactory extends AbstractObjectFactory
             rand(1, abs($config[Repository::REVISIONS]) + 1) : (1 + $config[Repository::REVISIONS]);
 
         // Determine the draft status
-        $draft = intval($config[Repository::DRAFTS] ? (rand(1, 5) == 5) : 0);
+        $draft = (($config[Repository::DRAFTS] > 0) ? (rand(0, 100) < $config[Repository::DRAFTS] * 100) : 0);
 
         // Build the revision path list
         $revisionPaths = [];
