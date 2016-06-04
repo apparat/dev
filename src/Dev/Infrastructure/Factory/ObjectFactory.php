@@ -50,11 +50,11 @@ class ObjectFactory implements ObjectFactoryInterface
     /**
      * Create a repository object
      *
-     * @param \DateTime $creationDate Creation date
+     * @param \DateTimeInterface $creationDate Creation date
      * @param int $objectId Object ID
      * @param array $config Object configuration
      */
-    public function create(\DateTime $creationDate, $objectId, array $config)
+    public function create(\DateTimeInterface $creationDate, $objectId, array $config)
     {
     }
 

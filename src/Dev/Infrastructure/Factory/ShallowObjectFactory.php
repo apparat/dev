@@ -72,13 +72,13 @@ class ShallowObjectFactory extends AbstractObjectFactory
     /**
      * Create a repository object
      *
-     * @param \DateTime $creationDate Creation date
+     * @param \DateTimeInterface $creationDate Creation date
      * @param int $objectId Object ID
      * @param array $config Object configuration
      * @throws RuntimeException If the resource container cannot be created
      * @throws RuntimeException If the shallow resource cannot be created
      */
-    public function create(\DateTime $creationDate, $objectId, array $config)
+    public function create(\DateTimeInterface $creationDate, $objectId, array $config)
     {
         /** @var FileAdapterStrategy $adapterStrategy */
         $adapterStrategy = $this->repository->getAdapterStrategy();

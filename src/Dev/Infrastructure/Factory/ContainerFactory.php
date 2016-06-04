@@ -47,13 +47,13 @@ class ContainerFactory
     /**
      * Create a container path
      *
-     * @param \DateTime $creationDate Object creation date and time
+     * @param \DateTimeInterface $creationDate Object creation date and time
      * @param boolean $hidden Hidden object
      * @param int $uid Object ID
      * @param string $type Object type
      * @return string Container path
      */
-    public function create(\DateTime $creationDate, $hidden, $uid, $type)
+    public function create(\DateTimeInterface $creationDate, $hidden, $uid, $type)
     {
         $components = array_slice(
             [

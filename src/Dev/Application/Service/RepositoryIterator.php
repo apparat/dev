@@ -100,9 +100,14 @@ class RepositoryIterator implements RepositoryIteratorInterface
      */
     public function key()
     {
-        return $this->dayPointer;
+        return $this->dayPointer->format('U');
     }
 
+    /**
+     * Return whether the current item is still valid
+     *
+     * @return bool
+     */
     public function valid()
     {
         return count($this->objectStack) > 0;

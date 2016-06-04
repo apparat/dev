@@ -82,11 +82,11 @@ class RepositoryGeneratorService
 
         // Iterate through the object stack
         /**
-         * @var \DateTime $creationDate Creation date
-         * @var array $objectConfig Object configuration
+         * @var int $creationDate
+         * @var array $objectConfig
          */
         foreach ($repositoryIterator as $creationDate => $objectConfig) {
-            $this->objectFactory->create($creationDate, ++$objectId, $objectConfig);
+            $this->objectFactory->create(new \DateTimeImmutable('@'.$creationDate), ++$objectId, $objectConfig);
         }
     }
 }
