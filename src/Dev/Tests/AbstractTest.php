@@ -36,6 +36,8 @@
 
 namespace Apparat\Dev\Tests;
 
+use Apparat\Dev\Module;
+
 /**
  * Basic tests for generic files
  *
@@ -56,6 +58,13 @@ abstract class AbstractTest extends \PHPUnit_Framework_TestCase
      * @var array
      */
     protected $tmpDirectories = [];
+    /**
+     * This method is called before the first test of this test class is run.
+     */
+    public static function setUpBeforeClass()
+    {
+        Module::autorun();
+    }
 
     /**
      * Tests if two arrays equal in their keys and values
