@@ -36,6 +36,11 @@
 
 namespace Apparat\Dev\Application\Utility;
 
+use Apparat\Kernel\Ports\Kernel;
+use Faker\Factory;
+use Faker\Generator;
+use Faker\Provider\Biased;
+
 /**
  * Random content generator
  *
@@ -50,20 +55,83 @@ class Random
      * @var array
      */
     protected static $markdown = null;
+    /**
+     * Faker instance
+     *
+     * @var Generator
+     */
+    protected static $faker = null;
+    /**
+     * Random image URL
+     *
+     * @var string
+     */
+    const RANDOM_IMAGE_URL = 'http://lorempixel.com/%s/%s/';
 
     /**
      * Return a markdown sample text
      *
+     * @param boolean $images Inject images
      * @return string Markdown sample text
      * @see https://jaspervdj.be/lorem-markdownum
      */
-    public static function markdown()
+    public static function markdown($images = true)
     {
         // One time loading of markdown sample data
         if (self::$markdown === null) {
             self::$markdown = require __DIR__.DIRECTORY_SEPARATOR.'Markdown.php';
             shuffle(self::$markdown);
         }
-        return self::$markdown[array_rand(self::$markdown)];
+
+        $markdown = self::$markdown[array_rand(self::$markdown)];
+
+        // If images should be injected
+        if ($images) {
+            $markdown = self::injectMarkdownImages($markdown);
+        }
+
+        return $markdown;
+    }
+
+    /**
+     * Inject a random number of images (between 0 and 3) into a markdown source
+     *
+     * @param string $markdown Markdown
+     * @return string Markdown with images
+     */
+    protected static function injectMarkdownImages($markdown)
+    {
+        $markdownBlocks = preg_split('%\R{2,}%', $markdown.PHP_EOL.PHP_EOL);
+
+        // Iterate through a random number of images between 0 and 3
+        for ($image = 0, $imageMax = 3 - self::faker()->biasedNumberBetween(0, 3); $image < $imageMax; ++$image) {
+            $markdownBlocks[array_rand($markdownBlocks)] .= PHP_EOL.PHP_EOL.self::randomMarkdownImage();
+        }
+
+        return trim(implode(PHP_EOL.PHP_EOL, $markdownBlocks));
+    }
+
+    /**
+     * Create and return a random image for Markdown use
+     *
+     * @return string Random image markdown
+     */
+    protected static function randomMarkdownImage()
+    {
+        return '!['.self::faker()->sentence().']('.sprintf(self::RANDOM_IMAGE_URL, rand(200, 400), rand(150, 300)).')';
+    }
+
+    /**
+     * Create and return a Faker generator
+     *
+     * @return Generator Faker generator
+     */
+    protected static function faker()
+    {
+        if (self::$faker === null) {
+            self::$faker = Factory::create();
+            self::$faker->addProvider(Kernel::create(Biased::class));
+        }
+        return self::$faker;
     }
 }

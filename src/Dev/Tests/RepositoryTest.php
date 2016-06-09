@@ -37,7 +37,7 @@
 namespace Apparat\Dev\Tests {
 
     use Apparat\Dev\Ports\Repository;
-    use Apparat\Object\Ports\Object;
+    use Apparat\Object\Ports\Types\Object;
 
     /**
      * Repository test
@@ -154,6 +154,7 @@ namespace Apparat\Dev\Tests {
                     Repository::COUNT => 10,
                     Repository::HIDDEN => .5,
                     Repository::DRAFTS => .2,
+                    Repository::REVISIONS => -2,
                 ],
             ];
             $this->generateAndTestRepository($objectConfig, 10, false);

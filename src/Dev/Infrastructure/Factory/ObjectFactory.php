@@ -41,7 +41,7 @@ use Apparat\Dev\Infrastructure\Mutator\ObjectMutatorInterface;
 use Apparat\Dev\Ports\Repository;
 use Apparat\Kernel\Ports\Kernel;
 use Apparat\Object\Domain\Model\Object\ObjectInterface;
-use Apparat\Object\Ports\Object;
+use Apparat\Object\Ports\Types\Object;
 
 /**
  * Object factory

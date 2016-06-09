@@ -39,7 +39,7 @@ namespace Apparat\Dev\Ports;
 use Apparat\Dev\Application\Service\RepositoryGeneratorService;
 use Apparat\Kernel\Ports\Kernel;
 use Apparat\Object\Infrastructure\Repository\FileAdapterStrategy;
-use Apparat\Object\Ports\Object;
+use Apparat\Object\Ports\Types\Object;
 
 /**
  * Repository tools
@@ -196,7 +196,7 @@ class Repository
     protected static function generateValidatedParams($root, array $config, $flags)
     {
         // Prepare the repository
-        $repository = \Apparat\Object\Ports\Repository::create(
+        $repository = \Apparat\Object\Infrastructure\Repository\Repository::create(
             getenv('REPOSITORY_URL'),
             [
                 'type' => FileAdapterStrategy::TYPE,
