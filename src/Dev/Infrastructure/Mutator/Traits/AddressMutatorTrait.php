@@ -57,6 +57,10 @@ use Faker\Generator;
  * @method ObjectInterface setRandomPostalCode(ObjectInterface $object, $probability)
  * @method ObjectInterface setRandomCountryName(ObjectInterface $object, $probability)
  * @method ObjectInterface setRandomLabel(ObjectInterface $object, $probability)
+ * @method ObjectInterface setRandomGeo(ObjectInterface $object, $probability)
+ * @method ObjectInterface setRandomLatitude(ObjectInterface $object, $probability)
+ * @method ObjectInterface setRandomLongitude(ObjectInterface $object, $probability)
+ * @method ObjectInterface setRandomAltitude(ObjectInterface $object, $probability)
  */
 trait AddressMutatorTrait
 {
@@ -174,5 +178,60 @@ trait AddressMutatorTrait
     protected function setLabel(ObjectInterface $object)
     {
         return $object->setDomainProperty(ContactProperties::LABEL, $this->generator->address);
+    }
+
+    /**
+     * Set the geo data
+     *
+     * @param ObjectInterface $object Contact
+     * @return ObjectInterface $object Contact
+     */
+    protected function setGeo(ObjectInterface $object)
+    {
+        // If an apparat URL should be used
+        if (rand(0, 1)) {
+            return $object->setDomainProperty(ContactProperties::GEO, Random::apparatUrl(Object::GEO));
+        }
+
+        // Else: Use a geo URI
+        $geoUriParts = array_filter([
+            $this->generator->latitude,
+            $this->generator->longitude,
+            rand(0, 1) ? (rand(-1000, 100000) / 100) : null,
+        ]);
+        return $object->setDomainProperty(ContactProperties::LABEL, 'geo:'.implode(',', $geoUriParts));
+    }
+
+    /**
+     * Set the latitude
+     *
+     * @param ObjectInterface $object Contact
+     * @return ObjectInterface $object Contact
+     */
+    protected function setLatitude(ObjectInterface $object)
+    {
+        return $object->setDomainProperty(ContactProperties::LATITUDE, $this->generator->latitude);
+    }
+
+    /**
+     * Set the longitude
+     *
+     * @param ObjectInterface $object Contact
+     * @return ObjectInterface $object Contact
+     */
+    protected function setLongitude(ObjectInterface $object)
+    {
+        return $object->setDomainProperty(ContactProperties::LONGITUDE, $this->generator->longitude);
+    }
+
+    /**
+     * Set the altitude
+     *
+     * @param ObjectInterface $object Contact
+     * @return ObjectInterface $object Contact
+     */
+    protected function setAltitude(ObjectInterface $object)
+    {
+        return $object->setDomainProperty(ContactProperties::ALTITUDE, rand(-1000, 100000) / 100);
     }
 }

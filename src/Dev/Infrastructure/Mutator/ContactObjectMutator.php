@@ -41,6 +41,7 @@ use Apparat\Dev\Infrastructure\Mutator\Traits\AddressMutatorTrait;
 use Apparat\Dev\Infrastructure\Mutator\Traits\NameMutatorTrait;
 use Apparat\Object\Application\Model\Properties\Domain\Contact as ContactProperties;
 use Apparat\Object\Domain\Model\Object\ObjectInterface;
+use Apparat\Object\Ports\Types\Object;
 
 /**
  * Contact object mutator
@@ -51,8 +52,17 @@ use Apparat\Object\Domain\Model\Object\ObjectInterface;
  * @method ObjectInterface setRandomLogo(ObjectInterface $object, $probability)
  * @method ObjectInterface setRandomPhoto(ObjectInterface $object, $probability)
  * @method ObjectInterface setRandomUrl(ObjectInterface $object, $probability)
- *
-
+ * @method ObjectInterface setRandomTel(ObjectInterface $object, $probability)
+ * @method ObjectInterface setRandomNote(ObjectInterface $object, $probability)
+ * @method ObjectInterface setRandomBday(ObjectInterface $object, $probability)
+ * @method ObjectInterface setRandomKey(ObjectInterface $object, $probability)
+ * @method ObjectInterface setRandomOrg(ObjectInterface $object, $probability)
+ * @method ObjectInterface setRandomJobTitle(ObjectInterface $object, $probability)
+ * @method ObjectInterface setRandomRole(ObjectInterface $object, $probability)
+ * @method ObjectInterface setRandomImpp(ObjectInterface $object, $probability)
+ * @method ObjectInterface setRandomSex(ObjectInterface $object, $probability)
+ * @method ObjectInterface setRandomGenderIdentity(ObjectInterface $object, $probability)
+ * @method ObjectInterface setRandomAnniversary(ObjectInterface $object, $probability)
  */
 class ContactObjectMutator extends AbstractObjectMutator
 {
@@ -89,32 +99,43 @@ class ContactObjectMutator extends AbstractObjectMutator
         $this->setRandomPhoto($object, .4); // u-photo
         $this->setRandomUrl($object, .7); // u-url - home page
 
-        // Initialize a postal address
         $this->happens(.4) ?
             $this->setRandomAdr($object, .8) : // p-adr - postal address, optionally embed an h-adr
             $this->initializeAddress($object);
+        $this->happens(.5) ?
+            $this->setRandomGeo($object, .8) : // u-geo
+            $this->initializeLatitudeLongitudeAltitude($object);
 
+        $this->setRandomTel($object, .5);
+        $this->setRandomNote($object, .3);
+        $this->setRandomBday($object, .3);
 
-        // p-geo or u-geo, optionally embed an h-geo
-        // 	Main article: h-geo
-        // p-latitude - decimal latitude
-        // p-longitude - decimal longitude
-        // p-altitude - decimal altitude
-        // p-tel - telephone number
-        // p-note - additional notes
-        // dt-bday - birth date
-        // u-key - cryptographic public key e.g. SSH or GPG
-        // p-org - affiliated organization, optionally embed an h-card
-        // p-job-title - job title, previously 'title' in hCard, disambiguated.
-        // p-role - description of role
-        // u-impp per RFC4770, new in vCard4 (RFC 6350)
-        // p-sex - biological sex, new in vCard4 (RFC 6350)
-        // p-gender-identity - gender identity, new in vCard4 (RFC 6350)
-        // dt-anniversary
+        $this->setRandomKey($object, .2);
+        $this->setRandomOrg($object, .5);
+        $this->setRandomJobTitle($object, .4);
+        $this->setRandomRole($object, .4);
+
+        $this->setRandomImpp($object, .1);
+        $this->setRandomSex($object, .8);
+        $this->setRandomGenderIdentity($object, .8);
+        $this->setRandomAnniversary($object, .4);
 
         return $object;
     }
 
+    /**
+     * Initialize granular geo data
+     *
+     * @param ObjectInterface $object Object
+     */
+    protected function initializeLatitudeLongitudeAltitude(ObjectInterface $object)
+    {
+        if ($this->happens(.8)) {
+            $this->setLatitude($object); // p-latitude - decimal latitude
+            $this->setLongitude($object); // p-longitude - decimal longitude
+            $this->setRandomAltitude($object, .5); // p-altitude - decimal altitude
+        }
+    }
 
     /**
      * Mutate the article
@@ -135,7 +156,6 @@ class ContactObjectMutator extends AbstractObjectMutator
 
         return $object;
     }
-
 
     /**
      * Set the contact email
@@ -181,5 +201,146 @@ class ContactObjectMutator extends AbstractObjectMutator
     {
         /** @noinspection PhpUndefinedMethodInspection */
         return $object->setDomainProperty(ContactProperties::URL, $this->generator->url());
+    }
+
+    /**
+     * Set a telephone number
+     *
+     * @param ObjectInterface $object Contact
+     * @return ObjectInterface $object Contact
+     */
+    protected function setTel(ObjectInterface $object)
+    {
+        return $object->setDomainProperty(ContactProperties::TEL, '+'.$this->generator->randomNumber(8));
+    }
+
+    /**
+     * Set an additional note
+     *
+     * @param ObjectInterface $object Contact
+     * @return ObjectInterface $object Contact
+     */
+    protected function setNote(ObjectInterface $object)
+    {
+        return $object->setDomainProperty(ContactProperties::NOTE, $this->generator->text());
+    }
+
+    /**
+     * Set a birthday
+     *
+     * @param ObjectInterface $object Contact
+     * @return ObjectInterface $object Contact
+     */
+    protected function setBday(ObjectInterface $object)
+    {
+        return $object->setDomainProperty(ContactProperties::BDAY, $this->generator->dateTime->format('c'));
+    }
+
+    /**
+     * Set a cryptographic key
+     *
+     * @param ObjectInterface $object Contact
+     * @return ObjectInterface $object Contact
+     */
+    protected function setKey(ObjectInterface $object)
+    {
+        return $object->setDomainProperty(
+            ContactProperties::KEY,
+            '0x'.substr($this->generator->creditCardNumber, 0, 8)
+        );
+    }
+
+    /**
+     * Set a birthday
+     *
+     * @param ObjectInterface $object Contact
+     * @return ObjectInterface $object Contact
+     */
+    protected function setOrg(ObjectInterface $object)
+    {
+        if ($this->happens(.5)) {
+            return $object->setDomainProperty(ContactProperties::ORG, Random::apparatUrl(Object::CONTACT));
+        }
+
+        return $object->setDomainProperty(ContactProperties::ORG, $this->generator->company);
+    }
+
+    /**
+     * Set a job title
+     *
+     * @param ObjectInterface $object Contact
+     * @return ObjectInterface $object Contact
+     */
+    protected function setJobTitle(ObjectInterface $object)
+    {
+        return $object->setDomainProperty(ContactProperties::JOB_TITLE, $this->generator->jobTitle);
+    }
+
+    /**
+     * Set a role
+     *
+     * @param ObjectInterface $object Contact
+     * @return ObjectInterface $object Contact
+     */
+    protected function setRole(ObjectInterface $object)
+    {
+        return $object->setDomainProperty(ContactProperties::ROLE, $this->generator->jobTitle);
+    }
+
+    /**
+     * Set an instant messager profiel
+     *
+     * @param ObjectInterface $object Contact
+     * @return ObjectInterface $object Contact
+     */
+    protected function setImpp(ObjectInterface $object)
+    {
+        $type = $this->generator->randomElement([
+            'sip',
+            'xmpp',
+            'irc',
+            'ymsgr',
+            'msn',
+            'aim',
+            'im',
+            'pres'
+        ]);
+        return $object->setDomainProperty(ContactProperties::IMPP, $type.':'.$this->generator->userName);
+    }
+
+    /**
+     * Set a role
+     *
+     * @param ObjectInterface $object Contact
+     * @return ObjectInterface $object Contact
+     */
+    protected function setSex(ObjectInterface $object)
+    {
+        return $object->setDomainProperty(
+            ContactProperties::SEX,
+            $this->generator->randomElement(['M', 'F', 'O', 'N', 'U'])
+        );
+    }
+
+    /**
+     * Set a gender identity
+     *
+     * @param ObjectInterface $object Contact
+     * @return ObjectInterface $object Contact
+     */
+    protected function setGenderIdentity(ObjectInterface $object)
+    {
+        return $object->setDomainProperty(ContactProperties::GENDER_IDENTITY, $this->generator->words(3, true));
+    }
+
+    /**
+     * Set a anniversary
+     *
+     * @param ObjectInterface $object Contact
+     * @return ObjectInterface $object Contact
+     */
+    protected function setAnniversary(ObjectInterface $object)
+    {
+        return $object->setDomainProperty(ContactProperties::ANNIVERSARY, $this->generator->dateTime->format('Y-m-d'));
     }
 }

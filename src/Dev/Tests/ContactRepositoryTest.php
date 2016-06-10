@@ -55,14 +55,13 @@ class ContactRepositoryTest extends AbstractRepositoryTest
     {
         $objectConfig = [
             Object::CONTACT => [
-                Repository::COUNT => 10,
+                Repository::COUNT => 50,
                 Repository::HIDDEN => .5,
                 Repository::DRAFTS => .2,
                 Repository::REVISIONS => -2,
             ],
         ];
-        $repository = $this->generateAndTestRepository($objectConfig, 10, false);
+        $repository = $this->generateAndTestRepository($objectConfig, 50, false);
         $this->assertInstanceOf(RepositoryInterface::class, $repository);
-//        exit;
     }
 }
