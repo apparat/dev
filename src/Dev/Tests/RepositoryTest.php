@@ -36,7 +36,9 @@
 
 namespace Apparat\Dev\Tests {
 
+    use Apparat\Dev\Infrastructure\Mutator\ArticleObjectMutator;
     use Apparat\Dev\Ports\Repository;
+    use Apparat\Kernel\Ports\Kernel;
     use Apparat\Object\Ports\Types\Object;
 
     /**
@@ -45,7 +47,7 @@ namespace Apparat\Dev\Tests {
      * @package Apparat\Dev
      * @subpackage Apparat\Dev\Tests
      */
-    class RepositoryTest extends AbstractTest
+    class RepositoryTest extends AbstractRepositoryTest
     {
         /**
          * Tears down the fixture
@@ -145,39 +147,33 @@ namespace Apparat\Dev\Tests {
         }
 
         /**
-         * Test the generation of a test repository
+         * Test mutator with invalid method
+         *
+         * @expectedException \Apparat\Dev\Ports\RuntimeException
+         * @expectedExceptionCode 1465078211
          */
-        public function testGenerateRepository()
+        public function testMutatorInvalidMethod()
         {
-            $objectConfig = [
-                Object::ARTICLE => [
-                    Repository::COUNT => 10,
-                    Repository::HIDDEN => .5,
-                    Repository::DRAFTS => .2,
-                    Repository::REVISIONS => -2,
-                ],
-            ];
-            $this->generateAndTestRepository($objectConfig, 10, false);
+            /** @var ArticleObjectMutator $articleMutator */
+            $articleMutator = Kernel::create(ArticleObjectMutator::class);
+            $this->assertInstanceOf(ArticleObjectMutator::class, $articleMutator);
+            /** @noinspection PhpUndefinedMethodInspection */
+            $articleMutator->invalidMethod(0, []);
         }
 
         /**
-         * Generate and test a repository
+         * Test mutator with invalid mutation subject
          *
-         * @param array $objectConfig Object configuration
-         * @param int $expectedCount Expected number of objects
-         * @param bool $emptyFiles Create empty files
+         * @expectedException \Apparat\Dev\Ports\RuntimeException
+         * @expectedExceptionCode 1465078374
          */
-        protected function generateAndTestRepository(array $objectConfig, $expectedCount, $emptyFiles = false)
+        public function testMutatorInvalidSubject()
         {
-            $tmpDirectory = sys_get_temp_dir().DIRECTORY_SEPARATOR.'apparat_test';
-            Repository::generate(
-                $this->registerTemporaryDirectory($tmpDirectory),
-                $objectConfig,
-                Repository::FLAG_CREATE_ROOT_DIRECTORY | ($emptyFiles ? Repository::FLAG_EMPTY_FILES : 0)
-            );
-            $datePath = str_repeat(DIRECTORY_SEPARATOR.'*', getenv('OBJECT_DATE_PRECISION'));
-            $glob = $tmpDirectory.$datePath.DIRECTORY_SEPARATOR.'{.,}[!.,!..]*';
-            $this->assertEquals($expectedCount, count(glob($glob, GLOB_ONLYDIR | GLOB_BRACE)));
+            /** @var ArticleObjectMutator $articleMutator */
+            $articleMutator = Kernel::create(ArticleObjectMutator::class);
+            $this->assertInstanceOf(ArticleObjectMutator::class, $articleMutator);
+            /** @noinspection PhpUndefinedMethodInspection */
+            $articleMutator->setRandomInvalid(0, []);
         }
     }
 }

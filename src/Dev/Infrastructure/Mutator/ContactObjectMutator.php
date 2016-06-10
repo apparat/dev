@@ -37,6 +37,9 @@
 namespace Apparat\Dev\Infrastructure\Mutator;
 
 use Apparat\Dev\Application\Utility\Random;
+use Apparat\Dev\Infrastructure\Mutator\Traits\AddressMutatorTrait;
+use Apparat\Dev\Infrastructure\Mutator\Traits\NameMutatorTrait;
+use Apparat\Object\Application\Model\Properties\Domain\Contact as ContactProperties;
 use Apparat\Object\Domain\Model\Object\ObjectInterface;
 
 /**
@@ -44,51 +47,80 @@ use Apparat\Object\Domain\Model\Object\ObjectInterface;
  *
  * @package Apparat\Dev
  * @subpackage Apparat\Dev\Infrastructure
+ * @method ObjectInterface setRandomEmail(ObjectInterface $object, $probability)
+ * @method ObjectInterface setRandomLogo(ObjectInterface $object, $probability)
+ * @method ObjectInterface setRandomPhoto(ObjectInterface $object, $probability)
+ * @method ObjectInterface setRandomUrl(ObjectInterface $object, $probability)
+ *
+
  */
 class ContactObjectMutator extends AbstractObjectMutator
 {
     /**
-     * Initialize the article
+     * Use traits
+     */
+    use NameMutatorTrait, AddressMutatorTrait;
+
+    /**
+     * Initialize the contact
      *
-     * @param ObjectInterface $object Article
-     * @return ObjectInterface Article
+     * @param ObjectInterface $object Contact
+     * @return ObjectInterface Contact
      */
     public function initialize(ObjectInterface $object)
     {
-        $this->setTitle($object); // p-name
-        $this->setRandomDescription($object, .7); // p-summary
-        $this->setRandomAbstract($object, .2);
+        $this->setRandomLocation($object, .6); // p-location
+        $this->setRandomDescription($object, .2); // p-summary
         $this->setRandomCategories($object, .4); // p-category
         $this->setRandomKeywords($object, .7);
-        $this->setAuthors($object); // TODO p-author
+        $this->setAuthors($object);
 
-        // URL = u-url
-        // URL = u-uid
-        // system.published = dt-published
-        // system.modified = dt-updated
+        // p-name - full/formatted name of the person or organisation (automatically set via the various name facets)
+        $this->setRandomHonorificPrefix($object, .3); // p-honorific-prefix - e.g. Mrs., Mr. or Dr.
+        $this->setGivenName($object); // p-given-name - given (often first) name
+        $this->setRandomNickname($object, .3); // p-nickname - nickname/alias/handle
+        $this->setRandomAdditionalName($object, .2); // p-additional-name - other/middle name
+        $this->setRandomFamilyName($object, .9);// p-family-name - family (often last) name
+        $this->setRandomHonorificSuffix($object, .1); // p-honorific-suffix - e.g. Ph.D, Esq.
+        $this->setSortString($object); // p-sort-string - string to sort by
 
-        // p-location
-        // u-syndication
-        // u-in-reply-to
-        // p-rsvp
-        // p-comment
-        // u-like-of
-        // u-like
-        // u-repost-of
-        // u-repost (+ h-cite)
-        // u-photo
-        // u-audio
-        // u-video
-        // u-featured
+        $this->setRandomEmail($object, .5); // u-email - email address
+        $this->setRandomLogo($object, .2); // u-logo - a logo representing the person or organisation
+        $this->setRandomPhoto($object, .4); // u-photo
+        $this->setRandomUrl($object, .7); // u-url - home page
+
+        // Initialize a postal address
+        $this->happens(.4) ?
+            $this->setRandomAdr($object, .8) : // p-adr - postal address, optionally embed an h-adr
+            $this->initializeAddress($object);
+
+
+        // p-geo or u-geo, optionally embed an h-geo
+        // 	Main article: h-geo
+        // p-latitude - decimal latitude
+        // p-longitude - decimal longitude
+        // p-altitude - decimal altitude
+        // p-tel - telephone number
+        // p-note - additional notes
+        // dt-bday - birth date
+        // u-key - cryptographic public key e.g. SSH or GPG
+        // p-org - affiliated organization, optionally embed an h-card
+        // p-job-title - job title, previously 'title' in hCard, disambiguated.
+        // p-role - description of role
+        // u-impp per RFC4770, new in vCard4 (RFC 6350)
+        // p-sex - biological sex, new in vCard4 (RFC 6350)
+        // p-gender-identity - gender identity, new in vCard4 (RFC 6350)
+        // dt-anniversary
 
         return $object;
     }
 
+
     /**
      * Mutate the article
      *
-     * @param ObjectInterface $object Article
-     * @return ObjectInterface Article
+     * @param ObjectInterface $object Contact
+     * @return ObjectInterface Contact
      */
     public function mutate(ObjectInterface $object)
     {
@@ -104,68 +136,50 @@ class ContactObjectMutator extends AbstractObjectMutator
         return $object;
     }
 
+
     /**
-     * Set the article title
+     * Set the contact email
      *
-     * @param ObjectInterface $object Article
-     * @return ObjectInterface $object Article
+     * @param ObjectInterface $object Contact
+     * @return ObjectInterface $object Contact
      */
-    protected function setTitle(ObjectInterface $object)
+    protected function setEmail(ObjectInterface $object)
     {
-        return $object->setTitle($this->generator->text(70));
-    }
-    /**
-     * Set the article description
-     *
-     * @param ObjectInterface $object Article
-     * @return ObjectInterface $object Article
-     */
-    protected function setDescription(ObjectInterface $object)
-    {
-        return $object->setDescription($this->generator->text(200));
+        /** @noinspection PhpUndefinedMethodInspection */
+        return $object->setDomainProperty(ContactProperties::EMAIL, $this->generator->email());
     }
 
     /**
-     * Set the article abstract
+     * Set a logo
      *
-     * @param ObjectInterface $object Article
-     * @return ObjectInterface $object Article
+     * @param ObjectInterface $object Contact
+     * @return ObjectInterface $object Contact
      */
-    protected function setAbstract(ObjectInterface $object)
+    protected function setLogo(ObjectInterface $object)
     {
-        return $object->setAbstract($this->generator->realText(250));
+        return $object->setDomainProperty(ContactProperties::LOGO, $this->generator->imageUrl());
     }
 
     /**
-     * Set the article keywords
+     * Set a photo
      *
-     * @param ObjectInterface $object Article
-     * @return ObjectInterface $object Article
+     * @param ObjectInterface $object Contact
+     * @return ObjectInterface $object Contact
      */
-    protected function setKeywords(ObjectInterface $object)
+    protected function setPhoto(ObjectInterface $object)
     {
-        return $object->setKeywords($this->generator->words(rand(0, 5)));
+        return $object->setDomainProperty(ContactProperties::PHOTO, $this->generator->imageUrl());
     }
 
     /**
-     * Set the article categories
+     * Set a URL
      *
-     * @param ObjectInterface $object Article
-     * @return ObjectInterface $object Article
+     * @param ObjectInterface $object Contact
+     * @return ObjectInterface $object Contact
      */
-    protected function setCategories(ObjectInterface $object)
+    protected function setUrl(ObjectInterface $object)
     {
-        return $object->setCategories($this->generator->words(rand(0, 5)));
-    }
-
-    /**
-     * Set the article authors
-     *
-     * @param ObjectInterface $object Article
-     * @return ObjectInterface $object Article
-     */
-    protected function setAuthors(ObjectInterface $object)
-    {
-        return $object;
+        /** @noinspection PhpUndefinedMethodInspection */
+        return $object->setDomainProperty(ContactProperties::URL, $this->generator->url());
     }
 }

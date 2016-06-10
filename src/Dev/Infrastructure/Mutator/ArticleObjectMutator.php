@@ -44,11 +44,6 @@ use Apparat\Object\Domain\Model\Object\ObjectInterface;
  *
  * @package Apparat\Dev
  * @subpackage Apparat\Dev\Infrastructure
- * @method ObjectInterface setRandomTitle(ObjectInterface $object, $probability)
- * @method ObjectInterface setRandomDescription(ObjectInterface $object, $probability)
- * @method ObjectInterface setRandomAbstract(ObjectInterface $object, $probability)
- * @method ObjectInterface setRandomCategories(ObjectInterface $object, $probability)
- * @method ObjectInterface setRandomKeywords(ObjectInterface $object, $probability)
  */
 class ArticleObjectMutator extends AbstractObjectMutator
 {

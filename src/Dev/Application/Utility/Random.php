@@ -94,6 +94,29 @@ class Random
     }
 
     /**
+     * Return a random apparat URL with a particular type
+     *
+     * @param string $objectType Object type
+     * @return string Random apparat URL
+     */
+    public static function apparatUrl($objectType)
+    {
+        $randomDatetime = self::faker()->dateTime;
+        $dateParts = [
+            $randomDatetime->format('Y'),
+            $randomDatetime->format('m'),
+            $randomDatetime->format('d'),
+            $randomDatetime->format('H'),
+            $randomDatetime->format('i'),
+            $randomDatetime->format('s'),
+        ];
+        $urlParts = array_slice($dateParts, 0, intval(getenv('OBJECT_DATE_PRECISION')));
+        $objectId = rand(1, 1000);
+        $urlParts[] = $objectId.'-'.$objectType;
+        return '/'.implode('/', $urlParts);
+    }
+
+    /**
      * Inject a random number of images (between 0 and 3) into a markdown source
      *
      * @param string $markdown Markdown

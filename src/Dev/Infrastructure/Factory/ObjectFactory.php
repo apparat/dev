@@ -37,6 +37,7 @@
 namespace Apparat\Dev\Infrastructure\Factory;
 
 use Apparat\Dev\Infrastructure\Mutator\ArticleObjectMutator;
+use Apparat\Dev\Infrastructure\Mutator\ContactObjectMutator;
 use Apparat\Dev\Infrastructure\Mutator\ObjectMutatorInterface;
 use Apparat\Dev\Ports\Repository;
 use Apparat\Kernel\Ports\Kernel;
@@ -117,5 +118,18 @@ class ObjectFactory extends AbstractObjectFactory
         /** @var ObjectMutatorInterface $objectMutator */
         $objectMutator = Kernel::create(ArticleObjectMutator::class);
         return $objectMutator->initialize($this->repository->createObject(Object::ARTICLE, '', [], $creationDate));
+    }
+
+    /**
+     * Create a contact object
+     *
+     * @param \DateTimeInterface $creationDate Creation date
+     * @return ObjectInterface Contact
+     */
+    protected function createContact(\DateTimeInterface $creationDate, ObjectMutatorInterface &$objectMutator = null)
+    {
+        /** @var ObjectMutatorInterface $objectMutator */
+        $objectMutator = Kernel::create(ContactObjectMutator::class);
+        return $objectMutator->initialize($this->repository->createObject(Object::CONTACT, '', [], $creationDate));
     }
 }

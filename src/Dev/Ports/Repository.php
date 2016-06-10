@@ -38,6 +38,7 @@ namespace Apparat\Dev\Ports;
 
 use Apparat\Dev\Application\Service\RepositoryGeneratorService;
 use Apparat\Kernel\Ports\Kernel;
+use Apparat\Object\Domain\Repository\RepositoryInterface;
 use Apparat\Object\Infrastructure\Repository\FileAdapterStrategy;
 use Apparat\Object\Ports\Types\Object;
 
@@ -109,6 +110,7 @@ class Repository
      * @param string $root Root directory
      * @param array $config Object configuration
      * @param int $flags Build flags
+     * @return RepositoryInterface Repository
      */
     public static function generate($root, array $config, $flags = 0)
     {
@@ -127,7 +129,7 @@ class Repository
         $config = self::sanitizeConfigArray($config);
 
         // Build the repository
-        self::generateValidatedParams($root, $config, $flags);
+        return self::generateValidatedParams($root, $config, $flags);
     }
 
     /**
@@ -192,6 +194,7 @@ class Repository
      * @param string $root Root directory
      * @param array $config Object configuration
      * @param int $flags Build flags
+     * @return RepositoryInterface Repository
      */
     protected static function generateValidatedParams($root, array $config, $flags)
     {
@@ -210,5 +213,7 @@ class Repository
         /** @var RepositoryGeneratorService $repoBuilder */
         $repoBuilder = Kernel::create($repoBuilderType, [$repository, $config]);
         $repoBuilder->generate($config);
+
+        return $repository;
     }
 }
