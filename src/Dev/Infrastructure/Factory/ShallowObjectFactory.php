@@ -39,8 +39,8 @@ namespace Apparat\Dev\Infrastructure\Factory;
 use Apparat\Dev\Ports\Repository;
 use Apparat\Dev\Ports\RuntimeException;
 use Apparat\Kernel\Ports\Kernel;
-use Apparat\Object\Domain\Model\Path\RepositoryPath;
-use Apparat\Object\Domain\Model\Path\RepositoryPathInterface;
+use Apparat\Object\Domain\Model\Uri\RepositoryLocator;
+use Apparat\Object\Domain\Model\Uri\RepositoryLocatorInterface;
 use Apparat\Object\Infrastructure\Repository\FileAdapterStrategy;
 
 /**
@@ -120,9 +120,9 @@ class ShallowObjectFactory extends AbstractObjectFactory
      */
     protected function createObjectResource($revisionPathIndex, $revisionPath, FileAdapterStrategy $adapterStrategy)
     {
-        /** @var RepositoryPathInterface $revRepositoryPath */
-        $revRepositoryPath = Kernel::create(RepositoryPath::class, [$this->repository, $revisionPath]);
-        $absRevisionPath = $adapterStrategy->getAbsoluteResourcePath($revRepositoryPath);
+        /** @var RepositoryLocatorInterface $revRepositoryLocator */
+        $revRepositoryLocator = Kernel::create(RepositoryLocator::class, [$this->repository, $revisionPath]);
+        $absRevisionPath = $adapterStrategy->getAbsoluteResourcePath($revRepositoryLocator);
 
         // For the first revision: Create the container directory
         if (!$revisionPathIndex) {
