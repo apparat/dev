@@ -89,7 +89,7 @@ trait AddressMutatorTrait
      */
     protected function setAdr(ObjectInterface $object)
     {
-        return $object->setDomainProperty(ContactProperties::ADR, Random::apparatUrl(Object::ADDRESS));
+        return $object->setDomain(ContactProperties::ADR, Random::apparatUrl(Object::ADDRESS));
     }
 
     /**
@@ -100,7 +100,7 @@ trait AddressMutatorTrait
      */
     protected function setPostOfficeBox(ObjectInterface $object)
     {
-        return $object->setDomainProperty(ContactProperties::POST_OFFICE_BOX, $this->generator->postcode);
+        return $object->setDomain(ContactProperties::POST_OFFICE_BOX, $this->generator->postcode);
     }
 
     /**
@@ -111,7 +111,7 @@ trait AddressMutatorTrait
      */
     protected function setExtendedAddress(ObjectInterface $object)
     {
-        return $object->setDomainProperty(ContactProperties::EXTENDED_ADDRESS, $this->generator->secondaryAddress);
+        return $object->setDomain(ContactProperties::EXTENDED_ADDRESS, $this->generator->secondaryAddress);
     }
 
     /**
@@ -122,7 +122,7 @@ trait AddressMutatorTrait
      */
     protected function setStreetAddress(ObjectInterface $object)
     {
-        return $object->setDomainProperty(ContactProperties::STREET_ADDRESS, $this->generator->streetAddress);
+        return $object->setDomain(ContactProperties::STREET_ADDRESS, $this->generator->streetAddress);
     }
 
     /**
@@ -133,7 +133,7 @@ trait AddressMutatorTrait
      */
     protected function setLocality(ObjectInterface $object)
     {
-        return $object->setDomainProperty(ContactProperties::LOCALITY, $this->generator->city);
+        return $object->setDomain(ContactProperties::LOCALITY, $this->generator->city);
     }
 
     /**
@@ -144,7 +144,7 @@ trait AddressMutatorTrait
      */
     protected function setRegion(ObjectInterface $object)
     {
-        return $object->setDomainProperty(ContactProperties::REGION, $this->generator->state);
+        return $object->setDomain(ContactProperties::REGION, $this->generator->state);
     }
 
     /**
@@ -155,7 +155,7 @@ trait AddressMutatorTrait
      */
     protected function setPostalCode(ObjectInterface $object)
     {
-        return $object->setDomainProperty(ContactProperties::POSTAL_CODE, $this->generator->postcode);
+        return $object->setDomain(ContactProperties::POSTAL_CODE, $this->generator->postcode);
     }
 
     /**
@@ -166,7 +166,7 @@ trait AddressMutatorTrait
      */
     protected function setCountryName(ObjectInterface $object)
     {
-        return $object->setDomainProperty(ContactProperties::COUNTRY_NAME, $this->generator->country);
+        return $object->setDomain(ContactProperties::COUNTRY_NAME, $this->generator->country);
     }
 
     /**
@@ -177,7 +177,7 @@ trait AddressMutatorTrait
      */
     protected function setLabel(ObjectInterface $object)
     {
-        return $object->setDomainProperty(ContactProperties::LABEL, $this->generator->address);
+        return $object->setDomain(ContactProperties::LABEL, $this->generator->address);
     }
 
     /**
@@ -190,7 +190,7 @@ trait AddressMutatorTrait
     {
         // If an apparat URL should be used
         if (rand(0, 1)) {
-            return $object->setDomainProperty(ContactProperties::GEO, Random::apparatUrl(Object::GEO));
+            return $object->setDomain(ContactProperties::GEO, Random::apparatUrl(Object::GEO));
         }
 
         // Else: Use a geo URI
@@ -199,7 +199,7 @@ trait AddressMutatorTrait
             $this->generator->longitude,
             rand(0, 1) ? (rand(-1000, 100000) / 100) : null,
         ]);
-        return $object->setDomainProperty(ContactProperties::LABEL, 'geo:'.implode(',', $geoUriParts));
+        return $object->setDomain(ContactProperties::LABEL, 'geo:'.implode(',', $geoUriParts));
     }
 
     /**
@@ -210,7 +210,7 @@ trait AddressMutatorTrait
      */
     protected function setLatitude(ObjectInterface $object)
     {
-        return $object->setDomainProperty(ContactProperties::LATITUDE, $this->generator->latitude);
+        return $object->setDomain(ContactProperties::LATITUDE, $this->generator->latitude);
     }
 
     /**
@@ -221,7 +221,7 @@ trait AddressMutatorTrait
      */
     protected function setLongitude(ObjectInterface $object)
     {
-        return $object->setDomainProperty(ContactProperties::LONGITUDE, $this->generator->longitude);
+        return $object->setDomain(ContactProperties::LONGITUDE, $this->generator->longitude);
     }
 
     /**
@@ -232,6 +232,6 @@ trait AddressMutatorTrait
      */
     protected function setAltitude(ObjectInterface $object)
     {
-        return $object->setDomainProperty(ContactProperties::ALTITUDE, rand(-1000, 100000) / 100);
+        return $object->setDomain(ContactProperties::ALTITUDE, rand(-1000, 100000) / 100);
     }
 }

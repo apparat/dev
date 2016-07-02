@@ -166,7 +166,7 @@ class ContactObjectMutator extends AbstractObjectMutator
     protected function setEmail(ObjectInterface $object)
     {
         /** @noinspection PhpUndefinedMethodInspection */
-        return $object->setDomainProperty(ContactProperties::EMAIL, $this->generator->email());
+        return $object->setDomain(ContactProperties::EMAIL, $this->generator->email());
     }
 
     /**
@@ -177,7 +177,7 @@ class ContactObjectMutator extends AbstractObjectMutator
      */
     protected function setLogo(ObjectInterface $object)
     {
-        return $object->setDomainProperty(ContactProperties::LOGO, $this->generator->imageUrl());
+        return $object->setDomain(ContactProperties::LOGO, $this->generator->imageUrl());
     }
 
     /**
@@ -188,7 +188,7 @@ class ContactObjectMutator extends AbstractObjectMutator
      */
     protected function setPhoto(ObjectInterface $object)
     {
-        return $object->setDomainProperty(ContactProperties::PHOTO, $this->generator->imageUrl());
+        return $object->setDomain(ContactProperties::PHOTO, $this->generator->imageUrl());
     }
 
     /**
@@ -200,7 +200,7 @@ class ContactObjectMutator extends AbstractObjectMutator
     protected function setUrl(ObjectInterface $object)
     {
         /** @noinspection PhpUndefinedMethodInspection */
-        return $object->setDomainProperty(ContactProperties::URL, $this->generator->url());
+        return $object->setDomain(ContactProperties::URL, $this->generator->url());
     }
 
     /**
@@ -211,7 +211,7 @@ class ContactObjectMutator extends AbstractObjectMutator
      */
     protected function setTel(ObjectInterface $object)
     {
-        return $object->setDomainProperty(ContactProperties::TEL, '+'.$this->generator->randomNumber(8));
+        return $object->setDomain(ContactProperties::TEL, '+'.$this->generator->randomNumber(8));
     }
 
     /**
@@ -222,7 +222,7 @@ class ContactObjectMutator extends AbstractObjectMutator
      */
     protected function setNote(ObjectInterface $object)
     {
-        return $object->setDomainProperty(ContactProperties::NOTE, $this->generator->text());
+        return $object->setDomain(ContactProperties::NOTE, $this->generator->text());
     }
 
     /**
@@ -233,7 +233,7 @@ class ContactObjectMutator extends AbstractObjectMutator
      */
     protected function setBday(ObjectInterface $object)
     {
-        return $object->setDomainProperty(ContactProperties::BDAY, $this->generator->dateTime->format('c'));
+        return $object->setDomain(ContactProperties::BDAY, $this->generator->dateTime->format('c'));
     }
 
     /**
@@ -244,7 +244,7 @@ class ContactObjectMutator extends AbstractObjectMutator
      */
     protected function setKey(ObjectInterface $object)
     {
-        return $object->setDomainProperty(
+        return $object->setDomain(
             ContactProperties::KEY,
             '0x'.substr($this->generator->creditCardNumber, 0, 8)
         );
@@ -259,10 +259,10 @@ class ContactObjectMutator extends AbstractObjectMutator
     protected function setOrg(ObjectInterface $object)
     {
         if ($this->happens(.5)) {
-            return $object->setDomainProperty(ContactProperties::ORG, Random::apparatUrl(Object::CONTACT));
+            return $object->setDomain(ContactProperties::ORG, Random::apparatUrl(Object::CONTACT));
         }
 
-        return $object->setDomainProperty(ContactProperties::ORG, $this->generator->company);
+        return $object->setDomain(ContactProperties::ORG, $this->generator->company);
     }
 
     /**
@@ -273,7 +273,7 @@ class ContactObjectMutator extends AbstractObjectMutator
      */
     protected function setJobTitle(ObjectInterface $object)
     {
-        return $object->setDomainProperty(ContactProperties::JOB_TITLE, $this->generator->jobTitle);
+        return $object->setDomain(ContactProperties::JOB_TITLE, $this->generator->jobTitle);
     }
 
     /**
@@ -284,7 +284,7 @@ class ContactObjectMutator extends AbstractObjectMutator
      */
     protected function setRole(ObjectInterface $object)
     {
-        return $object->setDomainProperty(ContactProperties::ROLE, $this->generator->jobTitle);
+        return $object->setDomain(ContactProperties::ROLE, $this->generator->jobTitle);
     }
 
     /**
@@ -305,7 +305,7 @@ class ContactObjectMutator extends AbstractObjectMutator
             'im',
             'pres'
         ]);
-        return $object->setDomainProperty(ContactProperties::IMPP, $type.':'.$this->generator->userName);
+        return $object->setDomain(ContactProperties::IMPP, $type.':'.$this->generator->userName);
     }
 
     /**
@@ -316,7 +316,7 @@ class ContactObjectMutator extends AbstractObjectMutator
      */
     protected function setSex(ObjectInterface $object)
     {
-        return $object->setDomainProperty(
+        return $object->setDomain(
             ContactProperties::SEX,
             $this->generator->randomElement(['M', 'F', 'O', 'N', 'U'])
         );
@@ -330,7 +330,7 @@ class ContactObjectMutator extends AbstractObjectMutator
      */
     protected function setGenderIdentity(ObjectInterface $object)
     {
-        return $object->setDomainProperty(ContactProperties::GENDER_IDENTITY, $this->generator->words(3, true));
+        return $object->setDomain(ContactProperties::GENDER_IDENTITY, $this->generator->words(3, true));
     }
 
     /**
@@ -341,6 +341,6 @@ class ContactObjectMutator extends AbstractObjectMutator
      */
     protected function setAnniversary(ObjectInterface $object)
     {
-        return $object->setDomainProperty(ContactProperties::ANNIVERSARY, $this->generator->dateTime->format('Y-m-d'));
+        return $object->setDomain(ContactProperties::ANNIVERSARY, $this->generator->dateTime->format('Y-m-d'));
     }
 }

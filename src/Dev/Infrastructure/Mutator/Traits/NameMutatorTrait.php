@@ -66,7 +66,7 @@ trait NameMutatorTrait
     protected function setHonorificPrefix(ObjectInterface $object)
     {
         /** @noinspection PhpUndefinedMethodInspection */
-        return $object->setDomainProperty(ContactProperties::HONORIFIC_PREFIX, $this->generator->title());
+        return $object->setDomain(ContactProperties::HONORIFIC_PREFIX, $this->generator->title());
     }
 
     /**
@@ -78,7 +78,7 @@ trait NameMutatorTrait
     protected function setGivenName(ObjectInterface $object)
     {
         /** @noinspection PhpUndefinedMethodInspection */
-        return $object->setDomainProperty(ContactProperties::GIVEN_NAME, $this->generator->firstName());
+        return $object->setDomain(ContactProperties::GIVEN_NAME, $this->generator->firstName());
     }
 
     /**
@@ -90,7 +90,7 @@ trait NameMutatorTrait
     protected function setFamilyName(ObjectInterface $object)
     {
         /** @noinspection PhpUndefinedMethodInspection */
-        return $object->setDomainProperty(ContactProperties::FAMILY_NAME, $this->generator->lastName());
+        return $object->setDomain(ContactProperties::FAMILY_NAME, $this->generator->lastName());
     }
 
     /**
@@ -102,7 +102,7 @@ trait NameMutatorTrait
     protected function setAdditionalName(ObjectInterface $object)
     {
         /** @noinspection PhpUndefinedMethodInspection */
-        return $object->setDomainProperty(ContactProperties::ADDITIONAL_NAME, $this->generator->firstName());
+        return $object->setDomain(ContactProperties::ADDITIONAL_NAME, $this->generator->firstName());
     }
 
     /**
@@ -114,7 +114,7 @@ trait NameMutatorTrait
     protected function setNickname(ObjectInterface $object)
     {
         /** @noinspection PhpUndefinedMethodInspection */
-        return $object->setDomainProperty(ContactProperties::NICKNAME, $this->generator->firstName());
+        return $object->setDomain(ContactProperties::NICKNAME, $this->generator->firstName());
     }
 
     /**
@@ -126,7 +126,7 @@ trait NameMutatorTrait
     protected function setHonorificSuffix(ObjectInterface $object)
     {
         /** @noinspection PhpUndefinedMethodInspection */
-        return $object->setDomainProperty(ContactProperties::HONORIFIC_SUFFIX, $this->generator->suffix());
+        return $object->setDomain(ContactProperties::HONORIFIC_SUFFIX, $this->generator->suffix());
     }
 
     /**
@@ -147,7 +147,7 @@ trait NameMutatorTrait
         ];
         foreach (array_keys($nameParts) as $property) {
             try {
-                $nameParts[$property] = $object->getDomainProperty($property);
+                $nameParts[$property] = $object->getDomain($property);
             } catch (InvalidArgumentException $e) {
                 continue;
             }
@@ -170,6 +170,6 @@ trait NameMutatorTrait
             ])
         );
         $sortString = ($sortStringPart1 ?: '---').', '.($sortStringPart2 ?: '---');
-        return $object->setDomainProperty(ContactProperties::SORT_STRING, trim($sortString, ' ,'));
+        return $object->setDomain(ContactProperties::SORT_STRING, trim($sortString, ' ,'));
     }
 }

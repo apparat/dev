@@ -282,7 +282,7 @@ abstract class AbstractObjectMutator implements ObjectMutatorInterface
      */
     protected function setFeatured(ObjectInterface $object)
     {
-        return $object->setDomainProperty('featured', $this->generator->imageUrl(1024, 768));
+        return $object->setDomain('featured', $this->generator->imageUrl(1024, 768));
     }
 
     /**
