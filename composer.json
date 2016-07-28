@@ -32,6 +32,11 @@
     },
     {
       "type": "vcs",
+      "url": "git@github.com:apparat/resource.git",
+      "reference": "master"
+    },
+    {
+      "type": "vcs",
       "url": "git@github.com:apparat/kernel.git",
       "reference": "master"
     },
