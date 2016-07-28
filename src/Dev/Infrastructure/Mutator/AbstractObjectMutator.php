@@ -289,8 +289,11 @@ abstract class AbstractObjectMutator implements ObjectMutatorInterface
         $syndicationUrls = [
             sprintf(self::TWITTER_STATUS, $this->generator->userName, $this->generator->creditCardNumber),
             sprintf(self::FACEBOOK_POST, $this->generator->userName, $this->generator->creditCardNumber),
-            sprintf(self::GOOGLEPLUS_POST, $this->generator->userName,
-                substr(base64_encode($this->generator->md5), 0, 12)),
+            sprintf(
+                self::GOOGLEPLUS_POST,
+                $this->generator->userName,
+                substr(base64_encode($this->generator->md5), 0, 12)
+            ),
             sprintf(self::INSTAGRAM_POST, substr(base64_encode($this->generator->md5), 0, 12))
         ];
 

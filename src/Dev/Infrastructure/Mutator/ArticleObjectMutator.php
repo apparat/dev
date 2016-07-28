@@ -89,5 +89,4 @@ class ArticleObjectMutator extends AbstractObjectMutator
 
         return $object;
     }
-
 }

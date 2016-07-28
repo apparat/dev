@@ -63,6 +63,7 @@ class ObjectFactory extends AbstractObjectFactory
     {
         $objectTypeMethod = ucfirst($config[Repository::TYPE]);
         $objectMutator = null;
+        $objectId = null;
 
         /** @var ObjectInterface $object */
         $object = $this->{'create'.$objectTypeMethod}($creationDate, $objectMutator);
