@@ -51,17 +51,6 @@ use Apparat\Object\Ports\Types\Object;
 class Repository
 {
     /**
-     * Default object configuration
-     *
-     * @var array
-     */
-    protected static $defaultObjectConfig = [
-        self::COUNT => 0,
-        self::DRAFTS => 0,
-        self::HIDDEN => 0,
-        self::REVISIONS => 0,
-    ];
-    /**
      * Object count
      *
      * @var string
@@ -103,6 +92,17 @@ class Repository
      * @var int
      */
     const FLAG_CREATE_ROOT_DIRECTORY = 2;
+    /**
+     * Default object configuration
+     *
+     * @var array
+     */
+    protected static $defaultObjectConfig = [
+        self::COUNT => 0,
+        self::DRAFTS => 0,
+        self::HIDDEN => 0,
+        self::REVISIONS => 0,
+    ];
 
     /**
      * Setup a dummy repository

@@ -100,6 +100,18 @@ namespace Apparat\Dev\Tests {
         }
 
         /**
+         * Test the repository generation with failing mkdir()
+         *
+         * @expectedException \Apparat\Dev\Ports\RuntimeException
+         * @expectedExceptionCode 1464997310
+         */
+        public function testGenerateRepositoryFailingMkdir()
+        {
+            putenv('MOCK_MKDIR=1');
+            $this->testGenerateRepositoryEmptyFiles();
+        }
+
+        /**
          * Test the generation of a test repository
          */
         public function testGenerateRepositoryEmptyFiles()
@@ -120,18 +132,6 @@ namespace Apparat\Dev\Tests {
                 ]
             ];
             $this->generateAndTestRepository($objectConfig, 200, true);
-        }
-
-        /**
-         * Test the repository generation with failing mkdir()
-         *
-         * @expectedException \Apparat\Dev\Ports\RuntimeException
-         * @expectedExceptionCode 1464997310
-         */
-        public function testGenerateRepositoryFailingMkdir()
-        {
-            putenv('MOCK_MKDIR=1');
-            $this->testGenerateRepositoryEmptyFiles();
         }
 
         /**

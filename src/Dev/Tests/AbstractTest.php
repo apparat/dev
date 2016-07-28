@@ -58,6 +58,7 @@ abstract class AbstractTest extends \PHPUnit_Framework_TestCase
      * @var array
      */
     protected $tmpDirectories = [];
+
     /**
      * This method is called before the first test of this test class is run.
      */
@@ -167,6 +168,24 @@ abstract class AbstractTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Scan a temporary directory and register all files and subdirectories (recursively)
+     *
+     * @param string $directory Directory
+     */
+    protected function scanTemporaryDirectory($directory)
+    {
+        foreach (scandir($directory) as $fileOrDirectory) {
+            if ($fileOrDirectory !== '.' && $fileOrDirectory !== '..' && !is_link($fileOrDirectory)) {
+                $fileOrDirectory = $directory.DIRECTORY_SEPARATOR.$fileOrDirectory;
+                $this->tmpFiles[] = $fileOrDirectory;
+                if (is_dir($fileOrDirectory)) {
+                    $this->scanTemporaryDirectory($fileOrDirectory);
+                }
+            }
+        }
+    }
+
+    /**
      * Prepare and register a temporary file name
      *
      * @return string Temporary file name
@@ -197,24 +216,6 @@ abstract class AbstractTest extends \PHPUnit_Framework_TestCase
     protected function registerTemporaryDirectory($directory)
     {
         return $this->tmpDirectories[] = $this->tmpFiles[] = $directory;
-    }
-
-    /**
-     * Scan a temporary directory and register all files and subdirectories (recursively)
-     *
-     * @param string $directory Directory
-     */
-    protected function scanTemporaryDirectory($directory)
-    {
-        foreach (scandir($directory) as $fileOrDirectory) {
-            if ($fileOrDirectory !== '.' && $fileOrDirectory !== '..' && !is_link($fileOrDirectory)) {
-                $fileOrDirectory = $directory.DIRECTORY_SEPARATOR.$fileOrDirectory;
-                $this->tmpFiles[] = $fileOrDirectory;
-                if (is_dir($fileOrDirectory)) {
-                    $this->scanTemporaryDirectory($fileOrDirectory);
-                }
-            }
-        }
     }
 
     /**

@@ -39,7 +39,7 @@ namespace Apparat\Dev\Ports;
 /**
  * Runtime exception
  *
- * @package Apparat\Server
+ * @package Apparat\Dev
  * @subpackage Apparat\Dev\Ports
  */
 class RuntimeException extends \RuntimeException

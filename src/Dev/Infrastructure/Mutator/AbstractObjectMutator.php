@@ -44,8 +44,8 @@ use Faker\Generator;
 /**
  * Abstract object mutator
  *
- * @package Apparat\Server
- * @subpackage Apparat\Dev\Infrastructure\Mutator
+ * @package Apparat\Dev
+ * @subpackage Apparat\Dev\Infrastructure
  * @method ObjectInterface setRandomTitle(ObjectInterface $object, $probability)
  * @method ObjectInterface setRandomDescription(ObjectInterface $object, $probability)
  * @method ObjectInterface setRandomAbstract(ObjectInterface $object, $probability)
@@ -59,12 +59,6 @@ use Faker\Generator;
  */
 abstract class AbstractObjectMutator implements ObjectMutatorInterface
 {
-    /**
-     * Fake data generator
-     *
-     * @var Generator
-     */
-    protected $generator;
     /**
      * Twitter status URL
      *
@@ -89,6 +83,12 @@ abstract class AbstractObjectMutator implements ObjectMutatorInterface
      * @var string
      */
     const INSTAGRAM_POST = 'https://www.instagram.com/p/%s/';
+    /**
+     * Fake data generator
+     *
+     * @var Generator
+     */
+    protected $generator;
 
     /**
      * Abstract object mutator constructor
@@ -132,6 +132,16 @@ abstract class AbstractObjectMutator implements ObjectMutatorInterface
         return $this->$setterMethod(...$arguments);
     }
 
+    /**
+     * Create a random signal with a particular probability
+     *
+     * @param float $probability Probability
+     * @return bool Signal
+     */
+    protected function happens($probability = 0.0)
+    {
+        return rand(0, 100) <= (max(0, min(1, floatval($probability))) * 100);
+    }
 
     /**
      * Set the object title
@@ -240,6 +250,19 @@ abstract class AbstractObjectMutator implements ObjectMutatorInterface
     }
 
     /**
+     * Format a relation string
+     *
+     * @param string $url URL
+     * @param string $email Email address
+     * @param string $label Label
+     * @return string Relation string
+     */
+    protected function formatRelation($url = '', $email = '', $label = '')
+    {
+        return implode(' ', array_filter([trim($url), trim($email) ? "<$email>" : '', trim($label)]));
+    }
+
+    /**
      * Set the object syndication URLs
      *
      * @param ObjectInterface $object Object
@@ -283,29 +306,5 @@ abstract class AbstractObjectMutator implements ObjectMutatorInterface
     protected function setFeatured(ObjectInterface $object)
     {
         return $object->setDomain('featured', $this->generator->imageUrl(1024, 768));
-    }
-
-    /**
-     * Create a random signal with a particular probability
-     *
-     * @param float $probability Probability
-     * @return bool Signal
-     */
-    protected function happens($probability = 0.0)
-    {
-        return rand(0, 100) <= (max(0, min(1, floatval($probability))) * 100);
-    }
-
-    /**
-     * Format a relation string
-     *
-     * @param string $url URL
-     * @param string $email Email address
-     * @param string $label Label
-     * @return string Relation string
-     */
-    protected function formatRelation($url = '', $email = '', $label = '')
-    {
-        return implode(' ', array_filter([trim($url), trim($email) ? "<$email>" : '', trim($label)]));
     }
 }

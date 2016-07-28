@@ -82,6 +82,17 @@ trait AddressMutatorTrait
     }
 
     /**
+     * Set the locality
+     *
+     * @param ObjectInterface $object Contact
+     * @return ObjectInterface $object Contact
+     */
+    protected function setLocality(ObjectInterface $object)
+    {
+        return $object->setDomain(ContactProperties::LOCALITY, $this->generator->city);
+    }
+
+    /**
      * Set an embedded apparat address
      *
      * @param ObjectInterface $object Contact
@@ -123,17 +134,6 @@ trait AddressMutatorTrait
     protected function setStreetAddress(ObjectInterface $object)
     {
         return $object->setDomain(ContactProperties::STREET_ADDRESS, $this->generator->streetAddress);
-    }
-
-    /**
-     * Set the locality
-     *
-     * @param ObjectInterface $object Contact
-     * @return ObjectInterface $object Contact
-     */
-    protected function setLocality(ObjectInterface $object)
-    {
-        return $object->setDomain(ContactProperties::LOCALITY, $this->generator->city);
     }
 
     /**

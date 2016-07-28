@@ -42,7 +42,7 @@ use Apparat\Dev\Module;
  * Module test
  *
  * @package Apparat\Dev
- * @subpackage Apparat\Dev\Ports
+ * @subpackage Apparat\Dev\Tests
  */
 class ModuleTest extends AbstractTest
 {

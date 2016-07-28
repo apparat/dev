@@ -42,7 +42,7 @@ use Apparat\Object\Domain\Model\Object\ObjectInterface;
  * ObjectMutatorInterface
  *
  * @package Apparat\Dev
- * @subpackage Apparat\Dev\Application
+ * @subpackage Apparat\Dev\Infrastructure
  */
 interface ObjectMutatorInterface
 {

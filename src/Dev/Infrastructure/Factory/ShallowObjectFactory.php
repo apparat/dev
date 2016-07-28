@@ -111,6 +111,39 @@ class ShallowObjectFactory extends AbstractObjectFactory
     }
 
     /**
+     * Generate the list of repository relative revision paths
+     *
+     * @param int $objectId Object ID
+     * @param array $config Object configuration
+     * @param string $containerPath Repository relative container path
+     * @return array Repository relative revision paths
+     */
+    protected function revisionPaths($objectId, array $config, $containerPath)
+    {
+        // Determine the amount of archive revisions to create
+        $revisions = ($config[Repository::REVISIONS] < 0) ?
+            rand(1, abs($config[Repository::REVISIONS]) + 1) : (1 + $config[Repository::REVISIONS]);
+
+        // Determine the draft status
+        $draft = (($config[Repository::DRAFTS] > 0) ? (rand(0, 100) < $config[Repository::DRAFTS] * 100) : 0);
+
+        // Build the revision path list
+        $revisionPaths = [];
+        for ($revision = 1; $revision < $revisions - $draft; ++$revision) {
+            $revisionPaths[] = $containerPath.$objectId.'-'.$revision.'.'.getenv('OBJECT_RESOURCE_EXTENSION');
+        }
+        if ($revision <= $revisions - $draft) {
+            $revisionPaths[] = $containerPath.$objectId.'.'.getenv('OBJECT_RESOURCE_EXTENSION');
+        }
+        if ($draft) {
+            $revisionPaths[] = $containerPath.($draft ? '.' : '').$objectId.'-'.$revisions.
+                '.'.getenv('OBJECT_RESOURCE_EXTENSION');
+        }
+
+        return $revisionPaths;
+    }
+
+    /**
      * Create a single object resource
      *
      * @param int $revisionPathIndex Revision path index
@@ -153,38 +186,5 @@ class ShallowObjectFactory extends AbstractObjectFactory
                 RuntimeException::CANNOT_CREATE_CONTAINER_DIRECTORY
             );
         }
-    }
-
-    /**
-     * Generate the list of repository relative revision paths
-     *
-     * @param int $objectId Object ID
-     * @param array $config Object configuration
-     * @param string $containerPath Repository relative container path
-     * @return array Repository relative revision paths
-     */
-    protected function revisionPaths($objectId, array $config, $containerPath)
-    {
-        // Determine the amount of archive revisions to create
-        $revisions = ($config[Repository::REVISIONS] < 0) ?
-            rand(1, abs($config[Repository::REVISIONS]) + 1) : (1 + $config[Repository::REVISIONS]);
-
-        // Determine the draft status
-        $draft = (($config[Repository::DRAFTS] > 0) ? (rand(0, 100) < $config[Repository::DRAFTS] * 100) : 0);
-
-        // Build the revision path list
-        $revisionPaths = [];
-        for ($revision = 1; $revision < $revisions - $draft; ++$revision) {
-            $revisionPaths[] = $containerPath.$objectId.'-'.$revision.'.'.getenv('OBJECT_RESOURCE_EXTENSION');
-        }
-        if ($revision <= $revisions - $draft) {
-            $revisionPaths[] = $containerPath.$objectId.'.'.getenv('OBJECT_RESOURCE_EXTENSION');
-        }
-        if ($draft) {
-            $revisionPaths[] = $containerPath.($draft ? '.' : '').$objectId.'-'.$revisions.
-                '.'.getenv('OBJECT_RESOURCE_EXTENSION');
-        }
-
-        return $revisionPaths;
     }
 }

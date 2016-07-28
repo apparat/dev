@@ -50,8 +50,8 @@ use Faker\Generator;
 /**
  * Object module
  *
- * @package Apparat\Object
- * @subpackage Apparat\Object
+ * @package Apparat\Dev
+ * @subpackage Apparat\Dev
  */
 class Module extends AbstractModule
 {
@@ -106,7 +106,7 @@ class Module extends AbstractModule
             'shared' => true,
             'substitutions' => [
                 Generator::class => [
-                    'instance' => function() {
+                    'instance' => function () {
                         return Factory::create();
                     },
                 ]
