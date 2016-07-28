@@ -63,7 +63,6 @@ class ObjectFactory extends AbstractObjectFactory
     {
         $objectTypeMethod = ucfirst($config[Repository::TYPE]);
         $objectMutator = null;
-        $objectId = null;
 
         /** @var ObjectInterface $object */
         $object = $this->{'create'.$objectTypeMethod}($creationDate, $objectMutator);
@@ -72,7 +71,8 @@ class ObjectFactory extends AbstractObjectFactory
         $this->createObjectRevisions($object, $config, $objectMutator);
 
         // Eventually hide the object if necessary
-        if (($config[Repository::HIDDEN] > 0) ? (rand(0, 100) < ($config[Repository::HIDDEN] * 100)) : false) {
+        if (($config[Repository::HIDDEN] > 0) ? (rand(min(0, $objectId), 100) < ($config[Repository::HIDDEN] * 100))
+            : false) {
             $object->delete()->persist();
         }
     }
