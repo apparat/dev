@@ -1,5 +1,11 @@
 # apparat/dev
 
+[![Build Status](https://secure.travis-ci.org/apparat/dev.svg)](https://travis-ci.org/apparat/dev)
+[![Coverage Status](https://coveralls.io/repos/apparat/dev/badge.svg?branch=master&service=github)](https://coveralls.io/github/apparat/dev?branch=master)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/apparat/dev/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/apparat/dev/?branch=master)
+[![Code Climate](https://codeclimate.com/github/apparat/dev/badges/gpa.svg)](https://codeclimate.com/github/apparat/dev)
+[![Documentation Status](https://readthedocs.org/projects/apparat-dev/badge/?version=latest)](http://apparat-dev.readthedocs.io/en/latest/?badge=latest)
+
 Purpose of this module:
 
 1. Dummy repository factory
@@ -13,13 +19,11 @@ Please find the [project documentation](doc/index.md) in the `doc` directory. I 
 
 This library requires PHP 5.6 or later. I recommend using the latest available version of PHP as a matter of principle. It has no userland dependencies.
 
-## Quality
+## Dependencies
 
-[![Build Status](https://secure.travis-ci.org/apparat/dev.svg)](https://travis-ci.org/apparat/dev)
-[![Coverage Status](https://coveralls.io/repos/apparat/dev/badge.svg?branch=master&service=github)](https://coveralls.io/github/apparat/dev?branch=master)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/apparat/dev/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/apparat/dev/?branch=master)
-[![Code Climate](https://codeclimate.com/github/apparat/dev/badges/gpa.svg)](https://codeclimate.com/github/apparat/dev)
-[![Documentation Status](https://readthedocs.org/projects/apparat-dev/badge/?version=latest)](http://apparat-dev.readthedocs.io/en/latest/?badge=latest)
+![Composer dependency graph](https://cdn.rawgit.com/apparat/apparat-dev/master/doc/dependencies.svg)
+
+## Quality
 
 To run the unit tests at the command line, issue `composer install` and then `phpunit` at the package root. This requires [Composer](http://getcomposer.org/) to be available as `composer`, and [PHPUnit](http://phpunit.de/manual/) to be available as `phpunit`.
 

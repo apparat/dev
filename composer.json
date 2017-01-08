@@ -22,30 +22,36 @@
     "apparat/kernel": "@dev",
     "apparat/object": "@dev",
     "dominicsayers/isemail": "dev-master",
-    "fzaninotto/faker": "dev-master"
+    "fzaninotto/faker": "dev-master",
+    "clue/graph-composer": "dev-master"
   },
-  "repositories": [
-    {
-      "type": "vcs",
+  "repositories": {
+    "0": {
+      "type": "git",
       "url": "git@github.com:apparat/object.git",
       "reference": "master"
     },
-    {
-      "type": "vcs",
+    "1": {
+      "type": "git",
       "url": "git@github.com:apparat/resource.git",
       "reference": "master"
     },
-    {
-      "type": "vcs",
+    "2": {
+      "type": "git",
       "url": "git@github.com:apparat/kernel.git",
       "reference": "master"
     },
-    {
-      "type": "vcs",
+    "3": {
+      "type": "git",
       "url": "git@github.com:dominicsayers/isemail.git",
       "reference": "master"
+    },
+    "4": {
+      "type": "git",
+      "url": "git@github.com:jkphl/graph-composer.git",
+      "reference": "master"
     }
-  ],
+  },
   "autoload": {
     "psr-4": {
       "Apparat\\": "src/"
