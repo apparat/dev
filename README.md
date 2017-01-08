@@ -21,7 +21,7 @@ This library requires PHP 5.6 or later. I recommend using the latest available v
 
 ## Dependencies
 
-![Composer dependency graph](https://cdn.rawgit.com/apparat/apparat-dev/master/doc/dependencies.svg)
+![Composer dependency graph](https://rawgit.com/apparat/dev/master/doc/dependencies.svg)
 
 ## Quality
 
